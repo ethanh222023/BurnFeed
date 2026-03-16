@@ -389,9 +389,9 @@ const BURNFEED_CONFIG = {
   googleScriptUrl: "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE",
   customJumpscareSound: "assets/ads/Ballsack3.mp3",
   popupTypeWeights: {
-    default: 0.0,
-    multiply: 0.0,
-    jumpscare: 1
+    default: 0.4,
+    multiply: 0.3,
+    jumpscare: 0.3
   }
 };
 
