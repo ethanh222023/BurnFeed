@@ -386,7 +386,12 @@ const MATCHES = [
 const BURNFEED_CONFIG = {
   storageKeyAnswers: "burnfeed_saved_answers_v1",
   storageKeyLogged: "burnfeed_logged_first_submit_v1",
-  googleScriptUrl: "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE"
+  googleScriptUrl: "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE",
+  popupTypeWeights: {
+    default: 0.4,
+    multiply: 0.3,
+    jumpscare: 0.3
+  }
 };
 
 const SIDE_ADS = [

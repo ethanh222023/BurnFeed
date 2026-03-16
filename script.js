@@ -215,6 +215,49 @@ function randomItem(items) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
+function weightedRandomType(weights) {
+  const entries = Object.entries(weights || {}).filter(([, value]) => Number(value) > 0);
+
+  if (entries.length === 0) {
+    return null;
+  }
+
+  const total = entries.reduce((sum, [, value]) => sum + Number(value), 0);
+  let roll = Math.random() * total;
+
+  for (const [type, value] of entries) {
+    roll -= Number(value);
+    if (roll <= 0) {
+      return type;
+    }
+  }
+
+  return entries[entries.length - 1][0];
+}
+
+function pickWeightedPopupAd() {
+  const configuredWeights = BURNFEED_CONFIG.popupTypeWeights || {
+    default: 0.4,
+    multiply: 0.3,
+    jumpscare: 0.3
+  };
+
+  let chosenType = weightedRandomType(configuredWeights);
+
+  if (chosenType === "multiply" && activeMultiplyFamily) {
+    const fallbackWeights = { ...configuredWeights, multiply: 0 };
+    chosenType = weightedRandomType(fallbackWeights) || "default";
+  }
+
+  const candidates = POPUP_ADS.filter((item) => item.type === chosenType);
+
+  if (candidates.length === 0) {
+    return randomItem(POPUP_ADS);
+  }
+
+  return randomItem(candidates);
+}
+
 function getPopupPosition() {
   const width = Math.min(window.innerWidth - 20, 420);
   const maxLeft = Math.max(12, window.innerWidth - width - 12);
@@ -261,12 +304,7 @@ function maybeSpawnRandomPopup() {
     return;
   }
 
-  let ad = randomItem(POPUP_ADS);
-
-  if (ad.type === "multiply" && activeMultiplyFamily) {
-    const alternatives = POPUP_ADS.filter((item) => item.type !== "multiply");
-    ad = randomItem(alternatives);
-  }
+  const ad = pickWeightedPopupAd();
 
   if (ad.type === "default") {
     openDefaultPopupAd(ad);
@@ -565,79 +603,139 @@ function playJumpscareSound() {
 
     const master = ctx.createGain();
     master.gain.setValueAtTime(0.0001, now);
-    master.gain.exponentialRampToValueAtTime(1, now + 0.015);
-    master.gain.exponentialRampToValueAtTime(0.0001, now + 1.15);
+    master.gain.exponentialRampToValueAtTime(1.35, now + 0.01);
+    master.gain.exponentialRampToValueAtTime(0.9, now + 0.08);
+    master.gain.exponentialRampToValueAtTime(0.0001, now + 1.55);
     master.connect(ctx.destination);
+
+    const compressor = ctx.createDynamicsCompressor();
+    compressor.threshold.value = -18;
+    compressor.knee.value = 8;
+    compressor.ratio.value = 14;
+    compressor.attack.value = 0.002;
+    compressor.release.value = 0.12;
+    compressor.connect(master);
 
     const distortion = ctx.createWaveShaper();
     const curve = new Float32Array(44100);
     for (let i = 0; i < curve.length; i += 1) {
       const x = (i * 2) / curve.length - 1;
-      curve[i] = ((3 + 18) * x * 20 * (Math.PI / 180)) / (Math.PI + 18 * Math.abs(x));
+      curve[i] = ((3 + 28) * x * 30 * (Math.PI / 180)) / (Math.PI + 28 * Math.abs(x));
     }
     distortion.curve = curve;
     distortion.oversample = "4x";
-    distortion.connect(master);
+    distortion.connect(compressor);
+
+    const screamBus = ctx.createGain();
+    screamBus.gain.value = 1.15;
+    screamBus.connect(distortion);
 
     const screamFilter = ctx.createBiquadFilter();
     screamFilter.type = "bandpass";
-    screamFilter.frequency.setValueAtTime(1600, now);
-    screamFilter.Q.value = 3.8;
-    screamFilter.connect(distortion);
+    screamFilter.frequency.setValueAtTime(2100, now);
+    screamFilter.frequency.linearRampToValueAtTime(2800, now + 0.09);
+    screamFilter.frequency.linearRampToValueAtTime(1850, now + 1.0);
+    screamFilter.Q.value = 6.5;
+    screamFilter.connect(screamBus);
 
     const highShriek = ctx.createOscillator();
     highShriek.type = "sawtooth";
-    highShriek.frequency.setValueAtTime(220, now);
-    highShriek.frequency.exponentialRampToValueAtTime(2200, now + 0.22);
-    highShriek.frequency.exponentialRampToValueAtTime(820, now + 0.95);
+    highShriek.frequency.setValueAtTime(620, now);
+    highShriek.frequency.exponentialRampToValueAtTime(3100, now + 0.06);
+    highShriek.frequency.exponentialRampToValueAtTime(1950, now + 0.32);
+    highShriek.frequency.exponentialRampToValueAtTime(2450, now + 0.72);
+    highShriek.frequency.exponentialRampToValueAtTime(1700, now + 1.3);
     highShriek.connect(screamFilter);
 
-    const lowGrowlFilter = ctx.createBiquadFilter();
-    lowGrowlFilter.type = "lowpass";
-    lowGrowlFilter.frequency.value = 180;
-    lowGrowlFilter.connect(distortion);
+    const formant = ctx.createOscillator();
+    formant.type = "triangle";
+    formant.frequency.setValueAtTime(980, now);
+    formant.frequency.linearRampToValueAtTime(1800, now + 0.12);
+    formant.frequency.linearRampToValueAtTime(1450, now + 0.7);
+    formant.frequency.linearRampToValueAtTime(1200, now + 1.25);
+    formant.connect(screamFilter);
 
-    const lowGrowl = ctx.createOscillator();
-    lowGrowl.type = "square";
-    lowGrowl.frequency.setValueAtTime(48, now);
-    lowGrowl.frequency.exponentialRampToValueAtTime(110, now + 0.3);
-    lowGrowl.frequency.exponentialRampToValueAtTime(55, now + 1.05);
-    lowGrowl.connect(lowGrowlFilter);
+    const screechGain = ctx.createGain();
+    screechGain.gain.setValueAtTime(0.0001, now);
+    screechGain.gain.exponentialRampToValueAtTime(1.1, now + 0.012);
+    screechGain.gain.exponentialRampToValueAtTime(0.6, now + 0.45);
+    screechGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.45);
+    screamFilter.disconnect();
+    screamFilter.connect(screechGain);
+    screechGain.connect(screamBus);
+
+    const stutterGain = ctx.createGain();
+    stutterGain.gain.setValueAtTime(0.0001, now);
+    stutterGain.gain.exponentialRampToValueAtTime(0.95, now + 0.018);
+    stutterGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.085);
+    stutterGain.gain.setValueAtTime(0.7, now + 0.11);
+    stutterGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.19);
+
+    const stutterOsc = ctx.createOscillator();
+    stutterOsc.type = "square";
+    stutterOsc.frequency.setValueAtTime(1180, now);
+    stutterOsc.frequency.exponentialRampToValueAtTime(2200, now + 0.07);
+    stutterOsc.connect(stutterGain);
+    stutterGain.connect(screamBus);
+
+    const impactFilter = ctx.createBiquadFilter();
+    impactFilter.type = "bandpass";
+    impactFilter.frequency.value = 130;
+    impactFilter.Q.value = 1.2;
+    impactFilter.connect(distortion);
+
+    const impactOsc = ctx.createOscillator();
+    impactOsc.type = "square";
+    impactOsc.frequency.setValueAtTime(95, now);
+    impactOsc.frequency.exponentialRampToValueAtTime(55, now + 0.22);
+    impactOsc.frequency.exponentialRampToValueAtTime(38, now + 0.8);
+    impactOsc.connect(impactFilter);
 
     const noiseSource = ctx.createBufferSource();
-    noiseSource.buffer = createNoiseBuffer(ctx, 1.2);
-    const noiseFilter = ctx.createBiquadFilter();
-    noiseFilter.type = "highpass";
-    noiseFilter.frequency.value = 900;
+    noiseSource.buffer = createNoiseBuffer(ctx, 1.55);
+    const noiseHigh = ctx.createBiquadFilter();
+    noiseHigh.type = "highpass";
+    noiseHigh.frequency.setValueAtTime(1400, now);
+    const noiseBand = ctx.createBiquadFilter();
+    noiseBand.type = "bandpass";
+    noiseBand.frequency.setValueAtTime(2600, now);
+    noiseBand.Q.value = 2.3;
     const noiseGain = ctx.createGain();
     noiseGain.gain.setValueAtTime(0.0001, now);
-    noiseGain.gain.exponentialRampToValueAtTime(0.85, now + 0.025);
-    noiseGain.gain.exponentialRampToValueAtTime(0.08, now + 1.1);
-    noiseSource.connect(noiseFilter);
-    noiseFilter.connect(noiseGain);
+    noiseGain.gain.exponentialRampToValueAtTime(1.25, now + 0.015);
+    noiseGain.gain.exponentialRampToValueAtTime(0.12, now + 1.35);
+    noiseSource.connect(noiseHigh);
+    noiseHigh.connect(noiseBand);
+    noiseBand.connect(noiseGain);
     noiseGain.connect(distortion);
 
-    const pulseFilter = ctx.createBiquadFilter();
-    pulseFilter.type = "bandpass";
-    pulseFilter.frequency.value = 760;
-    pulseFilter.Q.value = 12;
-    pulseFilter.connect(distortion);
+    const metallicFilter = ctx.createBiquadFilter();
+    metallicFilter.type = "bandpass";
+    metallicFilter.frequency.value = 3200;
+    metallicFilter.Q.value = 10;
+    metallicFilter.connect(distortion);
 
-    const pulse = ctx.createOscillator();
-    pulse.type = "triangle";
-    pulse.frequency.setValueAtTime(14, now);
-    pulse.frequency.exponentialRampToValueAtTime(34, now + 0.5);
-    pulse.connect(pulseFilter);
+    const metallic = ctx.createOscillator();
+    metallic.type = "triangle";
+    metallic.frequency.setValueAtTime(2500, now);
+    metallic.frequency.linearRampToValueAtTime(3600, now + 0.04);
+    metallic.frequency.linearRampToValueAtTime(2800, now + 0.24);
+    metallic.frequency.linearRampToValueAtTime(3300, now + 0.5);
+    metallic.connect(metallicFilter);
 
     highShriek.start(now);
-    lowGrowl.start(now);
+    formant.start(now);
+    stutterOsc.start(now);
+    impactOsc.start(now);
     noiseSource.start(now);
-    pulse.start(now);
+    metallic.start(now);
 
-    highShriek.stop(now + 1.18);
-    lowGrowl.stop(now + 1.18);
-    noiseSource.stop(now + 1.18);
-    pulse.stop(now + 1.18);
+    highShriek.stop(now + 1.55);
+    formant.stop(now + 1.55);
+    stutterOsc.stop(now + 0.22);
+    impactOsc.stop(now + 0.95);
+    noiseSource.stop(now + 1.55);
+    metallic.stop(now + 0.62);
   } catch (error) {
     console.warn("Jumpscare audio could not play.", error);
   }
