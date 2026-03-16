@@ -148,7 +148,7 @@ function openSideAdModal(ad) {
   sideAdModalTitle.textContent = ad.title;
   sideAdModalImage.src = ad.modalImage;
   sideAdModalImage.alt = `${ad.title} expanded ad`;
-  sideAdModalText.innerHTML = ad.copy.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
+  sideAdModalText.innerHTML = (ad.copy || []).map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
   sideAdModal.classList.remove("hidden");
   sideAdModal.setAttribute("aria-hidden", "false");
   setScrollLock(true);
@@ -214,6 +214,97 @@ function randomBetween(min, max) {
 
 function randomItem(items) {
   return items[Math.floor(Math.random() * items.length)];
+}
+
+function randomItemExcluding(items, excludedValue = null) {
+  const filtered = items.filter((item) => item !== excludedValue);
+
+  if (filtered.length === 0) {
+    return excludedValue;
+  }
+
+  return filtered[Math.floor(Math.random() * filtered.length)];
+}
+
+function getResolvedSideAdImagePool() {
+  if (Array.isArray(window.SIDE_AD_IMAGE_POOL) && window.SIDE_AD_IMAGE_POOL.length > 0) {
+    return window.SIDE_AD_IMAGE_POOL.slice();
+  }
+
+  if (Array.isArray(window.SIDE_ADS)) {
+    return window.SIDE_ADS
+      .flatMap((ad) => Array.isArray(ad.thumbs) ? ad.thumbs : [])
+      .filter(Boolean);
+  }
+
+  return [];
+}
+
+function getResolvedClickableSideAds() {
+  if (window.CLICKABLE_SIDE_ADS && typeof window.CLICKABLE_SIDE_ADS === "object") {
+    return window.CLICKABLE_SIDE_ADS;
+  }
+
+  return {
+    "assets/ads/Free_ad.jpg": {
+      modalImage: "assets/ads/Free_ad_popup.jpg",
+      copy: [
+        "Replace this with whatever larger image you want for the Free ad popup.",
+        "This ad is clickable because apparently even fake banners need hierarchy."
+      ]
+    },
+    "assets/ads/15year_ad.jpg": {
+      modalImage: "assets/ads/15year_ad_popup.jpg",
+      copy: [
+        "Replace this with whatever larger image you want for the 15 year ad popup.",
+        "Only this and the Free ad are supposed to interrupt people even more than the rest."
+      ]
+    }
+  };
+}
+
+function getResolvedPopupAdImagePool() {
+  if (Array.isArray(window.POPUP_AD_IMAGE_POOL) && window.POPUP_AD_IMAGE_POOL.length > 0) {
+    return window.POPUP_AD_IMAGE_POOL.slice();
+  }
+
+  if (Array.isArray(window.POPUP_ADS)) {
+    return window.POPUP_ADS
+      .filter((ad) => ad && ad.type !== "jumpscare" && ad.image)
+      .map((ad) => ad.image);
+  }
+
+  return [];
+}
+
+function getRandomSideAdPair() {
+  const pool = getResolvedSideAdImagePool();
+
+  if (pool.length === 0) {
+    return [null, null];
+  }
+
+  if (pool.length === 1) {
+    return [pool[0], pool[0]];
+  }
+
+  const first = randomItem(pool);
+  const second = randomItemExcluding(pool, first);
+  return [first, second];
+}
+
+function getPopupImageForAd(ad) {
+  if (ad.type === "jumpscare") {
+    return ad.image;
+  }
+
+  const pool = getResolvedPopupAdImagePool();
+
+  if (pool.length === 0) {
+    return ad.image || "";
+  }
+
+  return randomItem(pool);
 }
 
 function weightedRandomType(weights) {
@@ -447,6 +538,7 @@ function createPopupShell(title) {
   floatingAdsLayer.appendChild(popup);
   activePopupCount += 1;
   makePopupDraggable(popup);
+  bringPopupToFront(popup);
   return popup;
 }
 
@@ -469,9 +561,10 @@ function openDefaultPopupAd(forcedAd = null) {
   const content = popup.querySelector(".ad-window-content");
   const actionRow = popup.querySelector(".ad-window-action-row");
   const closeButton = popup.querySelector(".ad-window-close");
+  const popupImage = getPopupImageForAd(ad);
 
   content.innerHTML = `
-    <img class="ad-window-image" src="${escapeHtml(ad.image)}" alt="${escapeHtml(ad.title)}" />
+    <img class="ad-window-image" src="${escapeHtml(popupImage)}" alt="${escapeHtml(ad.title)}" />
     <p class="ad-window-copy">${escapeHtml(ad.body)}</p>
   `;
 
@@ -546,11 +639,12 @@ function buildMultiplyPopup(family, lineageLabel) {
   const content = popup.querySelector(".ad-window-content");
   const actionRow = popup.querySelector(".ad-window-action-row");
   const closeButton = popup.querySelector(".ad-window-close");
+  const popupImage = getPopupImageForAd(ad);
 
   family.openCount += 1;
 
   content.innerHTML = `
-    <img class="ad-window-image" src="${escapeHtml(ad.image)}" alt="${escapeHtml(ad.title)}" />
+    <img class="ad-window-image" src="${escapeHtml(popupImage)}" alt="${escapeHtml(ad.title)}" />
     <p class="ad-window-copy">${escapeHtml(ad.body)} Round ${family.round + 1} of ${BURNFEED_CONFIG.multiplyPopupRounds + 1}. The next wave will not appear until every clone from this round is actually closed. Progress, somehow.</p>
   `;
   actionRow.innerHTML = `<button class="ad-window-action" type="button">Maybe Later</button>`;
@@ -610,12 +704,10 @@ function playCustomJumpscareSound() {
       customJumpscareAudio.preload = "auto";
     }
 
-    if (customJumpscareAudio.src !== new URL(customPath, window.location.href).href) {
-      customJumpscareAudio = new Audio(customPath);
-      customJumpscareAudio.preload = "auto";
+    if (customJumpscareAudio.paused === false) {
+      customJumpscareAudio.pause();
     }
 
-    customJumpscareAudio.pause();
     customJumpscareAudio.currentTime = 0;
     customJumpscareAudio.volume = 1;
     customJumpscareAudio.play().catch((error) => {
@@ -782,22 +874,44 @@ function triggerJumpscare(forcedAd = null) {
   }, BURNFEED_CONFIG.jumpscareDurationMs);
 }
 
+function applySideAdImage(button, imagePath, fallbackTitle) {
+  const image = button.querySelector("img");
+  if (!image || !imagePath) {
+    return;
+  }
+
+  const clickableSideAds = getResolvedClickableSideAds();
+  const clickableConfig = clickableSideAds[imagePath] || null;
+  const buttonTitle = button.dataset.sideAdTitle || fallbackTitle || "Sponsored Ad";
+
+  image.src = imagePath;
+  image.alt = `${buttonTitle} rotating ad`;
+  image.dataset.currentAdImage = imagePath;
+
+  button.dataset.clickable = clickableConfig ? "true" : "false";
+  button.classList.toggle("is-clickable", Boolean(clickableConfig));
+}
+
 function rotateSideAds() {
-  document.querySelectorAll("[data-side-ad-index]").forEach((button) => {
-    const adIndex = Number(button.dataset.sideAdIndex);
-    const ad = SIDE_ADS[adIndex];
-    const image = button.querySelector("img");
+  const buttons = Array.from(document.querySelectorAll("[data-side-ad-index]"));
 
-    if (!ad || !image || !Array.isArray(ad.thumbs) || ad.thumbs.length === 0) {
-      return;
-    }
+  if (buttons.length === 0) {
+    return;
+  }
 
-    const currentIndex = Number(button.dataset.rotationIndex || "0");
-    const nextIndex = (currentIndex + 1) % ad.thumbs.length;
-    image.src = ad.thumbs[nextIndex];
-    image.alt = `${ad.title} rotating ad ${nextIndex + 1}`;
-    button.dataset.rotationIndex = String(nextIndex);
-  });
+  const [firstImage, secondImage] = getRandomSideAdPair();
+
+  if (buttons[0]) {
+    applySideAdImage(buttons[0], firstImage, "Left side ad");
+  }
+
+  if (buttons[1]) {
+    applySideAdImage(buttons[1], secondImage, "Right side ad");
+  }
+
+  for (let index = 2; index < buttons.length; index += 1) {
+    applySideAdImage(buttons[index], randomItemExcluding(getResolvedSideAdImagePool(), firstImage), `Side ad ${index + 1}`);
+  }
 }
 
 function startSideAdRotation() {
@@ -810,23 +924,37 @@ function startSideAdRotation() {
 }
 
 function bindSideAdButtons() {
-  document.querySelectorAll("[data-side-ad-index]").forEach((button) => {
-    const adIndex = Number(button.dataset.sideAdIndex);
-    const ad = SIDE_ADS[adIndex];
-    const image = button.querySelector("img");
+  const buttons = document.querySelectorAll("[data-side-ad-index]");
 
-    if (ad && image && Array.isArray(ad.thumbs) && ad.thumbs.length > 0) {
-      image.src = ad.thumbs[0];
-      image.alt = `${ad.title} rotating ad 1`;
-      button.dataset.rotationIndex = "0";
+  buttons.forEach((button) => {
+    const adIndex = Number(button.dataset.sideAdIndex);
+    const ad = Array.isArray(SIDE_ADS) ? SIDE_ADS[adIndex] : null;
+
+    if (ad) {
+      button.dataset.sideAdTitle = ad.title || `Side ad ${adIndex + 1}`;
     }
 
     button.addEventListener("click", () => {
-      if (ad) {
-        openSideAdModal(ad);
+      if (button.dataset.clickable !== "true") {
+        return;
       }
+
+      const currentImage = button.querySelector("img")?.dataset.currentAdImage;
+      const clickableConfig = getResolvedClickableSideAds()[currentImage];
+
+      if (!clickableConfig) {
+        return;
+      }
+
+      openSideAdModal({
+        title: ad?.title || "Sponsored Interruptions",
+        modalImage: clickableConfig.modalImage || currentImage,
+        copy: clickableConfig.copy || []
+      });
     });
   });
+
+  rotateSideAds();
 }
 
 function primeAdEngineOnInteraction() {
