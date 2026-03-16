@@ -463,7 +463,7 @@ Object.assign(BURNFEED_CONFIG, {
   popupIntervalMinMs: 5000,
   popupIntervalMaxMs: 15000,
   sideAdRotateMs: 10000,
-  multiplyPopupRounds: 2,
+  multiplyPopupRounds: 3,
   maxSimultaneousPopups: 6,
   jumpscareDurationMs: 300,
   sideAdModalLockScroll: true
