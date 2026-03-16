@@ -279,59 +279,100 @@ function maybeSpawnRandomPopup() {
   scheduleNextPopup();
 }
 
+function bringPopupToFront(popup) {
+  const current = Number(floatingAdsLayer.dataset.topZIndex || "120");
+  const next = current + 1;
+  floatingAdsLayer.dataset.topZIndex = String(next);
+  popup.style.zIndex = String(next);
+}
+
 function makePopupDraggable(popup) {
-  const header = popup.querySelector(".ad-window-header");
-  if (!header) {
+  const dragHandle = popup.querySelector(".ad-window-header") || popup;
+  if (!dragHandle) {
     return;
   }
 
-  let pointerId = null;
+  let isDragging = false;
   let startX = 0;
   let startY = 0;
   let originLeft = 0;
   let originTop = 0;
 
-  const onPointerMove = (event) => {
-    if (event.pointerId !== pointerId) {
+  const getClientPoint = (event) => {
+    if (event.touches && event.touches[0]) {
+      return { x: event.touches[0].clientX, y: event.touches[0].clientY };
+    }
+
+    if (event.changedTouches && event.changedTouches[0]) {
+      return { x: event.changedTouches[0].clientX, y: event.changedTouches[0].clientY };
+    }
+
+    return { x: event.clientX, y: event.clientY };
+  };
+
+  const onDragMove = (event) => {
+    if (!isDragging) {
       return;
     }
 
+    const point = getClientPoint(event);
     const popupWidth = popup.offsetWidth;
     const popupHeight = popup.offsetHeight;
-    const nextLeft = clamp(originLeft + (event.clientX - startX), 8, window.innerWidth - popupWidth - 8);
-    const nextTop = clamp(originTop + (event.clientY - startY), 8, window.innerHeight - popupHeight - 8);
+    const nextLeft = clamp(originLeft + (point.x - startX), 8, window.innerWidth - popupWidth - 8);
+    const nextTop = clamp(originTop + (point.y - startY), 8, window.innerHeight - popupHeight - 8);
 
     popup.style.left = `${nextLeft}px`;
     popup.style.top = `${nextTop}px`;
-  };
 
-  const stopDragging = (event) => {
-    if (pointerId !== null && event.pointerId === pointerId) {
-      pointerId = null;
-      popup.classList.remove("dragging");
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerup", stopDragging);
-      window.removeEventListener("pointercancel", stopDragging);
+    if (event.cancelable) {
+      event.preventDefault();
     }
   };
 
-  header.addEventListener("pointerdown", (event) => {
-    if (event.target.closest("button")) {
+  const stopDragging = () => {
+    if (!isDragging) {
       return;
     }
 
-    pointerId = event.pointerId;
-    startX = event.clientX;
-    startY = event.clientY;
-    originLeft = parseFloat(popup.style.left) || 0;
-    originTop = parseFloat(popup.style.top) || 0;
-    popup.classList.add("dragging");
-    popup.style.zIndex = String(100 + activePopupCount);
+    isDragging = false;
+    popup.classList.remove("dragging");
+    document.removeEventListener("mousemove", onDragMove);
+    document.removeEventListener("mouseup", stopDragging);
+    document.removeEventListener("touchmove", onDragMove, { passive: false });
+    document.removeEventListener("touchend", stopDragging);
+    document.removeEventListener("touchcancel", stopDragging);
+  };
 
-    window.addEventListener("pointermove", onPointerMove);
-    window.addEventListener("pointerup", stopDragging);
-    window.addEventListener("pointercancel", stopDragging);
-  });
+  const startDragging = (event) => {
+    if (event.target.closest("button") || event.target.closest("a") || event.target.closest("input") || event.target.closest("label")) {
+      return;
+    }
+
+    const point = getClientPoint(event);
+    isDragging = true;
+    startX = point.x;
+    startY = point.y;
+    originLeft = parseFloat(popup.style.left) || popup.offsetLeft || 0;
+    originTop = parseFloat(popup.style.top) || popup.offsetTop || 0;
+    popup.classList.add("dragging");
+    bringPopupToFront(popup);
+
+    document.addEventListener("mousemove", onDragMove);
+    document.addEventListener("mouseup", stopDragging);
+    document.addEventListener("touchmove", onDragMove, { passive: false });
+    document.addEventListener("touchend", stopDragging);
+    document.addEventListener("touchcancel", stopDragging);
+
+    if (event.cancelable) {
+      event.preventDefault();
+    }
+  };
+
+  dragHandle.style.touchAction = "none";
+  dragHandle.addEventListener("mousedown", startDragging);
+  dragHandle.addEventListener("touchstart", startDragging, { passive: false });
+  popup.addEventListener("mousedown", () => bringPopupToFront(popup));
+  popup.addEventListener("touchstart", () => bringPopupToFront(popup), { passive: true });
 }
 
 function createPopupShell(title) {
