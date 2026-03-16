@@ -396,6 +396,16 @@ label {
   cursor: grabbing;
 }
 
+.ad-window,
+.ad-window * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.ad-window-image {
+  pointer-events: none;
+}
+
 .jumpscare-overlay {
   position: fixed;
   inset: 0;

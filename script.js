@@ -287,8 +287,7 @@ function bringPopupToFront(popup) {
 }
 
 function makePopupDraggable(popup) {
-  const dragHandle = popup.querySelector(".ad-window-header") || popup;
-  if (!dragHandle) {
+  if (!popup) {
     return;
   }
 
@@ -318,8 +317,10 @@ function makePopupDraggable(popup) {
     const point = getClientPoint(event);
     const popupWidth = popup.offsetWidth;
     const popupHeight = popup.offsetHeight;
-    const nextLeft = clamp(originLeft + (point.x - startX), 8, window.innerWidth - popupWidth - 8);
-    const nextTop = clamp(originTop + (point.y - startY), 8, window.innerHeight - popupHeight - 8);
+    const maxLeft = Math.max(8, window.innerWidth - popupWidth - 8);
+    const maxTop = Math.max(8, window.innerHeight - popupHeight - 8);
+    const nextLeft = clamp(originLeft + (point.x - startX), 8, maxLeft);
+    const nextTop = clamp(originTop + (point.y - startY), 8, maxTop);
 
     popup.style.left = `${nextLeft}px`;
     popup.style.top = `${nextTop}px`;
@@ -338,12 +339,16 @@ function makePopupDraggable(popup) {
     popup.classList.remove("dragging");
     document.removeEventListener("mousemove", onDragMove);
     document.removeEventListener("mouseup", stopDragging);
-    document.removeEventListener("touchmove", onDragMove, { passive: false });
+    document.removeEventListener("touchmove", onDragMove);
     document.removeEventListener("touchend", stopDragging);
     document.removeEventListener("touchcancel", stopDragging);
   };
 
   const startDragging = (event) => {
+    if (event.button !== undefined && event.button !== 0) {
+      return;
+    }
+
     if (event.target.closest("button") || event.target.closest("a") || event.target.closest("input") || event.target.closest("label")) {
       return;
     }
@@ -352,8 +357,13 @@ function makePopupDraggable(popup) {
     isDragging = true;
     startX = point.x;
     startY = point.y;
-    originLeft = parseFloat(popup.style.left) || popup.offsetLeft || 0;
-    originTop = parseFloat(popup.style.top) || popup.offsetTop || 0;
+
+    const rect = popup.getBoundingClientRect();
+    originLeft = rect.left;
+    originTop = rect.top;
+
+    popup.style.left = `${originLeft}px`;
+    popup.style.top = `${originTop}px`;
     popup.classList.add("dragging");
     bringPopupToFront(popup);
 
@@ -368,9 +378,13 @@ function makePopupDraggable(popup) {
     }
   };
 
-  dragHandle.style.touchAction = "none";
-  dragHandle.addEventListener("mousedown", startDragging);
-  dragHandle.addEventListener("touchstart", startDragging, { passive: false });
+  popup.style.touchAction = "none";
+  popup.querySelectorAll("img").forEach((img) => {
+    img.draggable = false;
+  });
+
+  popup.addEventListener("mousedown", startDragging);
+  popup.addEventListener("touchstart", startDragging, { passive: false });
   popup.addEventListener("mousedown", () => bringPopupToFront(popup));
   popup.addEventListener("touchstart", () => bringPopupToFront(popup), { passive: true });
 }
