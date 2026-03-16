@@ -1,15 +1,19 @@
 # BurnFeed Matchmaker Quiz
 
-A static GitHub Pages-friendly website that mimics a BuzzFeed-style quiz, returns a deterministic match from 31 possible results, shows the result in a modal, preserves previous answers in the browser, and can log the **first** submission from that browser to a Google Form through Google Apps Script.
+A static GitHub Pages-friendly website that mimics a BuzzFeed-style quiz, returns a deterministic match from 31 possible results, shows the result in a modal, preserves previous answers in the browser, logs the **first** submission from that browser to a Google Form through Google Apps Script, and now includes aggressively annoying fake ads because apparently dignity was optional.
 
 ## Files
 
 - `index.html` - main page
-- `styles.css` - page styling
-- `data.js` - quiz questions, 31 matches, image paths, and config
-- `script.js` - quiz rendering, deterministic result logic, modal behavior, answer persistence, and first-submit logging
+- `styles.css` - page styling, layout, side ads, popups, jumpscare overlay
+- `data.js` - quiz questions, 31 matches, ad content, image paths, and config
+- `script.js` - quiz rendering, deterministic result logic, modal behavior, answer persistence, ad engine, and first-submit logging
 - `google-apps-script/Code.gs` - optional Google Apps Script endpoint that forwards submissions into your Google Form
 - `assets/matches/placeholder.svg` - placeholder result image until you replace each match image path
+- `assets/ads/side-ad-1.svg` - left side ad placeholder
+- `assets/ads/side-ad-2.svg` - right side ad placeholder
+- `assets/ads/ad-popup.svg` - popup ad placeholder
+- `assets/ads/jumpscare.svg` - jumpscare placeholder image
 
 ## Quick setup for GitHub Pages
 
@@ -20,7 +24,9 @@ A static GitHub Pages-friendly website that mimics a BuzzFeed-style quiz, return
 5. Select your main branch and `/root` folder, then save.
 6. Wait a minute or two. GitHub will publish your site.
 
-## How to customize match images
+## What you can customize
+
+### Match images
 
 Each result in `data.js` has an `image` field.
 
@@ -40,6 +46,60 @@ To use real images:
 1. Put your image files into `assets/matches/`
 2. Update each `image` path in `data.js`
 3. Commit and push the changes to GitHub
+
+### Side ads and popup ads
+
+The ad content is driven by `SIDE_ADS` and `POPUP_ADS` in `data.js`.
+
+You can replace:
+
+- side ad thumbnails
+- expanded side ad modal images
+- popup ad image
+- jumpscare image
+- ad titles and copy
+
+Example side ad object:
+
+```js
+{
+  id: "left-banner",
+  title: "This Could Have Been A Nice Website",
+  thumb: "assets/ads/side-ad-1.svg",
+  modalImage: "assets/ads/ad-popup.svg",
+  copy: ["Paragraph 1", "Paragraph 2"]
+}
+```
+
+Example popup ad object:
+
+```js
+{
+  type: "default",
+  title: "Singles Near Literally Anywhere",
+  image: "assets/ads/ad-popup.svg",
+  body: "A normal popup ad."
+}
+```
+
+### Ad timing and chaos settings
+
+At the bottom of `data.js`, these config values control the ad behavior:
+
+```js
+popupIntervalMinMs: 5000,
+popupIntervalMaxMs: 15000,
+multiplyPopupRounds: 2,
+maxSimultaneousPopups: 4,
+jumpscareDurationMs: 260
+```
+
+Meaning:
+
+- `popupIntervalMinMs` / `popupIntervalMaxMs` control how often random popup ads appear
+- `multiplyPopupRounds` controls how many generations the multiplying ad creates
+- `maxSimultaneousPopups` limits how many floating ads are allowed at once
+- `jumpscareDurationMs` controls how long the jumpscare image stays visible
 
 ## How deterministic matching works
 
@@ -61,6 +121,39 @@ That means:
 - Their previous answers stay selected using `localStorage`.
 - If they change answers and submit again, the result updates.
 - Logging to Google Form happens only on the **first** submission in that browser because a `localStorage` flag is stored.
+
+## How the fake ads work
+
+### Side ads
+
+- There is one large ad on each side of the quiz on desktop layouts.
+- Clicking a side ad opens a modal with a bigger placeholder image and text.
+- The user must close that modal before returning to the page.
+- On smaller screens, the side ads are hidden to keep the mobile layout from becoming a war crime.
+
+### Random popup ads
+
+After the visitor first interacts with the page, the popup engine starts.
+
+A new popup appears every 5 to 15 seconds and randomly chooses one of these behaviors:
+
+1. **Default popup**
+   - Standard floating ad window
+   - User can close it with the X or the button
+
+2. **Multiplying popup**
+   - Closing it spawns two more popups
+   - This repeats for a few rounds, based on `multiplyPopupRounds`
+
+3. **Jumpscare popup**
+   - Full-screen scary image
+   - Very short display time
+   - Loud synthesized audio made with the browser Web Audio API
+   - Auto-closes immediately after
+
+### Important browser note about jumpscare audio
+
+Modern browsers usually block autoplay audio until the user has interacted with the page. That is why the ad engine and sound system only start after the first click or key press.
 
 ## Google Form logging setup
 
@@ -140,13 +233,13 @@ Keep the IDs as `q1` through `q10` unless you also update the Google Apps Script
 
 ## Future additions
 
-This structure is ready for the next round of questionable feature creep, including:
+This structure is ready for the next round of feature creep, including:
 
 - intro splash screens
-- result share cards
-- categories/tags per match
-- timers
+- share cards
+- categories or filters for results
+- extra ad types
 - analytics
-- more elaborate layouts
-- image-heavy question cards
-
+- timer-based fake urgency
+- custom transitions and animations
+- a fake "loading" sequence before the result appears

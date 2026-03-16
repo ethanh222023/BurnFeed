@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="900" viewBox="0 0 900 900" fill="none">
+  <rect width="900" height="900" fill="#000"/>
+  <circle cx="450" cy="450" r="250" fill="#260000"/>
+  <circle cx="350" cy="380" r="64" fill="#fff"/>
+  <circle cx="550" cy="380" r="64" fill="#fff"/>
+  <circle cx="350" cy="380" r="25" fill="#000"/>
+  <circle cx="550" cy="380" r="25" fill="#000"/>
+  <path d="M270 620C350 530 550 530 630 620" stroke="#ff1f1f" stroke-width="34" stroke-linecap="round"/>
+  <text x="450" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="54" font-weight="800" fill="#ff1f1f">JUMPSCARE</text>
+  <text x="450" y="820" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" fill="#ddd">Replace this with your own horrifying image later</text>
+</svg>

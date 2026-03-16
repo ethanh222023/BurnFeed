@@ -388,3 +388,68 @@ const BURNFEED_CONFIG = {
   storageKeyLogged: "burnfeed_logged_first_submit_v1",
   googleScriptUrl: "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE"
 };
+
+const SIDE_ADS = [
+  {
+    id: "left-banner",
+    title: "This Could Have Been A Nice Website",
+    thumb: "assets/ads/side-ad-1.svg",
+    modalImage: "assets/ads/ad-popup.svg",
+    copy: [
+      "This is the expanded version of the left-side ad. Replace the image here with whatever fake sponsor or cursed graphic you want.",
+      "The user must close this before getting back to the quiz, which is an elegant way to disrespect their attention span."
+    ]
+  },
+  {
+    id: "right-banner",
+    title: "Premium Distraction Experience",
+    thumb: "assets/ads/side-ad-2.svg",
+    modalImage: "assets/ads/ad-popup.svg",
+    copy: [
+      "This is the expanded version of the right-side ad. Swap in your own image later to make the interruption feel truly personal.",
+      "It exists for the noble purpose of making a simple quiz feel like crossing a highway in flip-flops."
+    ]
+  }
+];
+
+const POPUP_ADS = [
+  {
+    type: "default",
+    title: "Singles Near Literally Anywhere",
+    image: "assets/ads/ad-popup.svg",
+    body: "A normal popup ad. The user can close it like a reasonable nuisance."
+  },
+  {
+    type: "default",
+    title: "Doctors Hate This Quiz",
+    image: "assets/ads/ad-popup.svg",
+    body: "Another plain popup, because repetition is the soul of bad design."
+  },
+  {
+    type: "multiply",
+    title: "Congratulations, You Clicked Nothing",
+    image: "assets/ads/ad-popup.svg",
+    body: "Closing this ad creates two more. It is inspired by malware and the human condition."
+  },
+  {
+    type: "multiply",
+    title: "Your Device Is Probably Fine",
+    image: "assets/ads/ad-popup.svg",
+    body: "Every close button is merely a suggestion. Two fresh popups will rise from its ashes."
+  },
+  {
+    type: "jumpscare",
+    title: "Jumpscare Ad",
+    image: "assets/ads/jumpscare.svg",
+    body: "Shows briefly with loud audio and vanishes before anyone can process their regret."
+  }
+];
+
+Object.assign(BURNFEED_CONFIG, {
+  popupIntervalMinMs: 5000,
+  popupIntervalMaxMs: 15000,
+  multiplyPopupRounds: 2,
+  maxSimultaneousPopups: 4,
+  jumpscareDurationMs: 260,
+  sideAdModalLockScroll: true
+});

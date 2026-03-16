@@ -24,6 +24,10 @@ body {
   font-family: "Inter", Arial, sans-serif;
 }
 
+body.no-scroll {
+  overflow: hidden;
+}
+
 img {
   max-width: 100%;
   display: block;
@@ -41,7 +45,7 @@ label {
   padding: 18px 20px;
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 30;
 }
 
 .brand {
@@ -54,9 +58,39 @@ label {
 }
 
 .page-shell {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(160px, 230px) minmax(0, 860px) minmax(160px, 230px);
+  gap: 24px;
   justify-content: center;
+  align-items: start;
   padding: 32px 16px 64px;
+}
+
+.side-ads {
+  position: sticky;
+  top: 104px;
+}
+
+.side-ad-button {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.side-ad-button img {
+  width: 100%;
+  min-height: 420px;
+  object-fit: cover;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  box-shadow: 0 16px 34px rgba(17, 17, 17, 0.12);
+  transition: transform 120ms ease;
+}
+
+.side-ad-button:hover img {
+  transform: translateY(-2px);
 }
 
 .quiz-card {
@@ -175,7 +209,9 @@ label {
 
 .primary-button,
 .secondary-button,
-.modal-close {
+.modal-close,
+.ad-window-close,
+.ad-window-action {
   border: none;
   border-radius: 999px;
   cursor: pointer;
@@ -208,7 +244,7 @@ label {
 .modal {
   position: fixed;
   inset: 0;
-  z-index: 20;
+  z-index: 60;
   display: grid;
   place-items: center;
 }
@@ -228,6 +264,10 @@ label {
   border-radius: 24px;
   box-shadow: var(--shadow);
   padding: 28px;
+}
+
+.ad-modal-panel {
+  width: min(92vw, 720px);
 }
 
 .modal-close {
@@ -274,6 +314,103 @@ label {
   margin: 0 0 14px;
 }
 
+.floating-ads-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 85;
+}
+
+.ad-window {
+  position: fixed;
+  width: min(90vw, 360px);
+  background: #fff;
+  border: 2px solid #d4d4d4;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.24);
+  border-radius: 18px;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.ad-window-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: linear-gradient(90deg, #f5f5f5 0%, #ececec 100%);
+  border-bottom: 1px solid #dadada;
+}
+
+.ad-window-title {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 800;
+}
+
+.ad-window-close {
+  width: 34px;
+  height: 34px;
+  background: #f0f0f0;
+  font-size: 1.25rem;
+}
+
+.ad-window-content {
+  padding: 14px;
+}
+
+.ad-window-image {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+}
+
+.ad-window-copy {
+  margin: 12px 0 0;
+  line-height: 1.55;
+  color: #333;
+}
+
+.ad-window-action-row {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 14px 14px;
+}
+
+.ad-window-action {
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 16px;
+  font-weight: 700;
+}
+
+.jumpscare-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: grid;
+  place-items: center;
+  background: #000;
+}
+
+.jumpscare-overlay img {
+  width: min(92vw, 820px);
+  max-height: 92vh;
+  object-fit: contain;
+}
+
+@media (max-width: 1100px) {
+  .page-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .side-ads {
+    display: none;
+  }
+}
+
 @media (max-width: 640px) {
   .quiz-card {
     padding: 20px;
@@ -291,5 +428,9 @@ label {
   .modal-panel {
     padding: 20px;
     border-radius: 18px;
+  }
+
+  .ad-window {
+    width: min(92vw, 340px);
   }
 }

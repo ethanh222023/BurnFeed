@@ -7,6 +7,21 @@ const resultName = document.getElementById("resultName");
 const resultText = document.getElementById("resultText");
 const closeModalBtn = document.getElementById("closeModalBtn");
 const resetKeepAnswersBtn = document.getElementById("resetKeepAnswersBtn");
+const sideAdModal = document.getElementById("sideAdModal");
+const sideAdModalTitle = document.getElementById("sideAdModalTitle");
+const sideAdModalImage = document.getElementById("sideAdModalImage");
+const sideAdModalText = document.getElementById("sideAdModalText");
+const closeSideAdModalBtn = document.getElementById("closeSideAdModalBtn");
+const floatingAdsLayer = document.getElementById("floatingAdsLayer");
+const jumpscareOverlay = document.getElementById("jumpscareOverlay");
+const jumpscareImage = document.getElementById("jumpscareImage");
+
+let persistenceListenerAttached = false;
+let adEngineStarted = false;
+let adTimerId = null;
+let popupsDisabledUntil = 0;
+let activePopupCount = 0;
+let scaryAudioContext = null;
 
 function escapeHtml(value) {
   return String(value)
@@ -15,6 +30,10 @@ function escapeHtml(value) {
     .replace(/>/g, "&gt;")
     .replace(/\"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+function setScrollLock(shouldLock) {
+  document.body.classList.toggle("no-scroll", shouldLock);
 }
 
 function renderQuestions() {
@@ -112,13 +131,34 @@ function openResultModal(match) {
   resultText.innerHTML = match.text.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
   resultModal.classList.remove("hidden");
   resultModal.setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden";
+  setScrollLock(true);
 }
 
 function closeResultModal() {
   resultModal.classList.add("hidden");
   resultModal.setAttribute("aria-hidden", "true");
-  document.body.style.overflow = "";
+  refreshScrollLock();
+}
+
+function openSideAdModal(ad) {
+  sideAdModalTitle.textContent = ad.title;
+  sideAdModalImage.src = ad.modalImage;
+  sideAdModalImage.alt = `${ad.title} expanded ad`;
+  sideAdModalText.innerHTML = ad.copy.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
+  sideAdModal.classList.remove("hidden");
+  sideAdModal.setAttribute("aria-hidden", "false");
+  setScrollLock(true);
+}
+
+function closeSideAdModal() {
+  sideAdModal.classList.add("hidden");
+  sideAdModal.setAttribute("aria-hidden", "true");
+  refreshScrollLock();
+}
+
+function refreshScrollLock() {
+  const modalIsOpen = !resultModal.classList.contains("hidden") || !sideAdModal.classList.contains("hidden");
+  setScrollLock(modalIsOpen);
 }
 
 async function logFirstSubmission(answers, match) {
@@ -151,8 +191,6 @@ async function logFirstSubmission(answers, match) {
   return { skipped: false };
 }
 
-let persistenceListenerAttached = false;
-
 function attachPersistenceListeners() {
   if (persistenceListenerAttached) {
     return;
@@ -164,6 +202,242 @@ function attachPersistenceListeners() {
   });
 
   persistenceListenerAttached = true;
+}
+
+function randomBetween(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randomItem(items) {
+  return items[Math.floor(Math.random() * items.length)];
+}
+
+function getPopupPosition() {
+  const width = Math.min(window.innerWidth - 20, 360);
+  const maxLeft = Math.max(12, window.innerWidth - width - 12);
+  const maxTop = Math.max(12, window.innerHeight - 260);
+
+  return {
+    left: randomBetween(12, maxLeft),
+    top: randomBetween(90, maxTop)
+  };
+}
+
+function scheduleNextPopup() {
+  window.clearTimeout(adTimerId);
+  const delay = randomBetween(BURNFEED_CONFIG.popupIntervalMinMs, BURNFEED_CONFIG.popupIntervalMaxMs);
+  adTimerId = window.setTimeout(maybeSpawnRandomPopup, delay);
+}
+
+function startAdEngine() {
+  if (adEngineStarted) {
+    return;
+  }
+
+  adEngineStarted = true;
+  scheduleNextPopup();
+}
+
+function maybeSpawnRandomPopup() {
+  if (!adEngineStarted) {
+    return;
+  }
+
+  if (Date.now() < popupsDisabledUntil) {
+    scheduleNextPopup();
+    return;
+  }
+
+  if (activePopupCount >= BURNFEED_CONFIG.maxSimultaneousPopups) {
+    scheduleNextPopup();
+    return;
+  }
+
+  const popupType = randomItem(POPUP_ADS).type;
+
+  if (popupType === "default") {
+    openDefaultPopupAd();
+  } else if (popupType === "multiply") {
+    openMultiplyPopupAd();
+  } else {
+    triggerJumpscare();
+  }
+
+  scheduleNextPopup();
+}
+
+function createPopupShell(title) {
+  const popup = document.createElement("section");
+  const position = getPopupPosition();
+
+  popup.className = "ad-window";
+  popup.style.left = `${position.left}px`;
+  popup.style.top = `${position.top}px`;
+  popup.innerHTML = `
+    <div class="ad-window-header">
+      <p class="ad-window-title">${escapeHtml(title)}</p>
+      <button class="ad-window-close" type="button" aria-label="Close ad">×</button>
+    </div>
+    <div class="ad-window-content"></div>
+    <div class="ad-window-action-row"></div>
+  `;
+
+  floatingAdsLayer.appendChild(popup);
+  activePopupCount += 1;
+  return popup;
+}
+
+function destroyPopup(popup) {
+  if (!popup || !popup.parentNode) {
+    return;
+  }
+
+  popup.parentNode.removeChild(popup);
+  activePopupCount = Math.max(0, activePopupCount - 1);
+}
+
+function pausePopupSpawns(ms) {
+  popupsDisabledUntil = Date.now() + ms;
+}
+
+function openDefaultPopupAd() {
+  const ad = randomItem(POPUP_ADS.filter((item) => item.type === "default"));
+  const popup = createPopupShell(ad.title);
+  const content = popup.querySelector(".ad-window-content");
+  const actionRow = popup.querySelector(".ad-window-action-row");
+  const closeButton = popup.querySelector(".ad-window-close");
+
+  content.innerHTML = `
+    <img class="ad-window-image" src="${escapeHtml(ad.image)}" alt="${escapeHtml(ad.title)}" />
+    <p class="ad-window-copy">${escapeHtml(ad.body)}</p>
+  `;
+
+  actionRow.innerHTML = `<button class="ad-window-action" type="button">Learn More</button>`;
+
+  const close = () => destroyPopup(popup);
+  closeButton.addEventListener("click", close);
+  actionRow.querySelector("button").addEventListener("click", close);
+}
+
+function buildMultiplyPopup(round, lineageLabel) {
+  const ad = randomItem(POPUP_ADS.filter((item) => item.type === "multiply"));
+  const popup = createPopupShell(`${ad.title} ${lineageLabel}`);
+  const content = popup.querySelector(".ad-window-content");
+  const actionRow = popup.querySelector(".ad-window-action-row");
+  const closeButton = popup.querySelector(".ad-window-close");
+
+  content.innerHTML = `
+    <img class="ad-window-image" src="${escapeHtml(ad.image)}" alt="${escapeHtml(ad.title)}" />
+    <p class="ad-window-copy">${escapeHtml(ad.body)} Round ${round + 1} of ${BURNFEED_CONFIG.multiplyPopupRounds + 1}. The website remains committed to making terrible choices.</p>
+  `;
+  actionRow.innerHTML = `<button class="ad-window-action" type="button">Maybe Later</button>`;
+
+  const explode = () => {
+    destroyPopup(popup);
+
+    if (round < BURNFEED_CONFIG.multiplyPopupRounds) {
+      for (let i = 0; i < 2; i += 1) {
+        if (activePopupCount < BURNFEED_CONFIG.maxSimultaneousPopups + 2) {
+          buildMultiplyPopup(round + 1, `${lineageLabel}.${i + 1}`);
+        }
+      }
+    }
+  };
+
+  closeButton.addEventListener("click", explode);
+  actionRow.querySelector("button").addEventListener("click", explode);
+}
+
+function openMultiplyPopupAd() {
+  buildMultiplyPopup(0, "1");
+}
+
+function ensureAudioContext() {
+  if (!scaryAudioContext) {
+    scaryAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+
+  if (scaryAudioContext.state === "suspended") {
+    scaryAudioContext.resume().catch(() => {});
+  }
+
+  return scaryAudioContext;
+}
+
+function playJumpscareSound() {
+  try {
+    const ctx = ensureAudioContext();
+    const gain = ctx.createGain();
+    const oscillator = ctx.createOscillator();
+    const oscillator2 = ctx.createOscillator();
+    const filter = ctx.createBiquadFilter();
+
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.95, ctx.currentTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.35);
+
+    oscillator.type = "sawtooth";
+    oscillator.frequency.setValueAtTime(110, ctx.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.18);
+
+    oscillator2.type = "square";
+    oscillator2.frequency.setValueAtTime(220, ctx.currentTime);
+    oscillator2.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.18);
+
+    filter.type = "highpass";
+    filter.frequency.value = 180;
+
+    oscillator.connect(filter);
+    oscillator2.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+
+    oscillator.start();
+    oscillator2.start();
+    oscillator.stop(ctx.currentTime + 0.36);
+    oscillator2.stop(ctx.currentTime + 0.36);
+  } catch (error) {
+    console.warn("Jumpscare audio could not play.", error);
+  }
+}
+
+function triggerJumpscare() {
+  const ad = randomItem(POPUP_ADS.filter((item) => item.type === "jumpscare"));
+  jumpscareImage.src = ad.image;
+  jumpscareImage.alt = ad.title;
+  jumpscareOverlay.classList.remove("hidden");
+  jumpscareOverlay.setAttribute("aria-hidden", "false");
+  playJumpscareSound();
+  pausePopupSpawns(2500);
+
+  window.setTimeout(() => {
+    jumpscareOverlay.classList.add("hidden");
+    jumpscareOverlay.setAttribute("aria-hidden", "true");
+  }, BURNFEED_CONFIG.jumpscareDurationMs);
+}
+
+function bindSideAdButtons() {
+  document.querySelectorAll("[data-side-ad-index]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const adIndex = Number(button.dataset.sideAdIndex);
+      const ad = SIDE_ADS[adIndex];
+      if (ad) {
+        openSideAdModal(ad);
+      }
+    });
+  });
+}
+
+function primeAdEngineOnInteraction() {
+  const kickOff = () => {
+    startAdEngine();
+    ensureAudioContext();
+    document.removeEventListener("pointerdown", kickOff);
+    document.removeEventListener("keydown", kickOff);
+  };
+
+  document.addEventListener("pointerdown", kickOff, { once: true });
+  document.addEventListener("keydown", kickOff, { once: true });
 }
 
 quizForm.addEventListener("submit", async (event) => {
@@ -205,17 +479,34 @@ resetKeepAnswersBtn.addEventListener("click", () => {
 });
 
 closeModalBtn.addEventListener("click", closeResultModal);
+closeSideAdModalBtn.addEventListener("click", closeSideAdModal);
+
 resultModal.addEventListener("click", (event) => {
   if (event.target.dataset.closeModal === "true") {
     closeResultModal();
   }
 });
 
+sideAdModal.addEventListener("click", (event) => {
+  if (event.target.dataset.closeSideAd === "true") {
+    closeSideAdModal();
+  }
+});
+
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !resultModal.classList.contains("hidden")) {
-    closeResultModal();
+  if (event.key === "Escape") {
+    if (!sideAdModal.classList.contains("hidden")) {
+      closeSideAdModal();
+      return;
+    }
+
+    if (!resultModal.classList.contains("hidden")) {
+      closeResultModal();
+    }
   }
 });
 
 renderQuestions();
 attachPersistenceListeners();
+bindSideAdButtons();
+primeAdEngineOnInteraction();

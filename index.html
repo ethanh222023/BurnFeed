@@ -6,7 +6,7 @@
     <title>BurnFeed Matchmaker Quiz</title>
     <meta
       name="description"
-      content="A BurnFeed-style matchmaker quiz with deterministic results and optional Google Form logging."
+      content="A BurnFeed-style matchmaker quiz with deterministic results, chaotic ads, and optional Google Form logging."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -22,6 +22,12 @@
     </header>
 
     <main class="page-shell">
+      <aside class="side-ads side-ads-left" aria-label="Left side ads">
+        <button class="side-ad-button" type="button" data-side-ad-index="0">
+          <img src="assets/ads/side-ad-1.svg" alt="Advertisement placeholder 1" />
+        </button>
+      </aside>
+
       <article class="quiz-card">
         <p class="eyebrow">Personality Quiz • Love Quiz</p>
         <h1 class="quiz-title">
@@ -40,7 +46,8 @@
               This quiz works like a suspiciously confident friend who thinks they
               can read your love life from your snack order. Your answers are turned
               into a deterministic match, so the same choices always give the same
-              result. Humanity adores pretending chaos is fate.
+              result. Sadly, it also monetizes your suffering with aggressive fake ads,
+              because authenticity matters.
             </p>
           </div>
         </section>
@@ -57,6 +64,12 @@
           <p id="formMessage" class="form-message" aria-live="polite"></p>
         </form>
       </article>
+
+      <aside class="side-ads side-ads-right" aria-label="Right side ads">
+        <button class="side-ad-button" type="button" data-side-ad-index="1">
+          <img src="assets/ads/side-ad-2.svg" alt="Advertisement placeholder 2" />
+        </button>
+      </aside>
     </main>
 
     <div id="resultModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
@@ -68,6 +81,23 @@
         <h2 id="resultName" class="result-name"></h2>
         <div id="resultText" class="result-text"></div>
       </div>
+    </div>
+
+    <div id="sideAdModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal-backdrop" data-close-side-ad="true"></div>
+      <div class="modal-panel ad-modal-panel" role="document">
+        <button id="closeSideAdModalBtn" class="modal-close" type="button" aria-label="Close ad">×</button>
+        <p class="result-label">Sponsored content</p>
+        <h2 id="sideAdModalTitle" class="result-name ad-modal-title"></h2>
+        <img id="sideAdModalImage" class="result-image" src="" alt="Side ad expanded content" />
+        <div id="sideAdModalText" class="result-text"></div>
+      </div>
+    </div>
+
+    <div id="floatingAdsLayer" class="floating-ads-layer" aria-live="polite"></div>
+
+    <div id="jumpscareOverlay" class="jumpscare-overlay hidden" aria-hidden="true">
+      <img id="jumpscareImage" src="assets/ads/jumpscare.svg" alt="Scary placeholder" />
     </div>
 
     <script src="data.js"></script>
