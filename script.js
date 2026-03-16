@@ -40,6 +40,81 @@ function setScrollLock(shouldLock) {
   document.body.classList.toggle("no-scroll", shouldLock);
 }
 
+function uniqueItems(items) {
+  return [...new Set(items.filter(Boolean))];
+}
+
+function buildImageCandidates(path) {
+  if (!path) {
+    return [];
+  }
+
+  const candidates = [path];
+  const slashIndex = path.lastIndexOf("/");
+  const basename = slashIndex >= 0 ? path.slice(slashIndex + 1) : path;
+  const dir = slashIndex >= 0 ? path.slice(0, slashIndex + 1) : "";
+  const dotIndex = basename.lastIndexOf(".");
+
+  candidates.push(basename);
+
+  if (dotIndex > 0) {
+    const stem = basename.slice(0, dotIndex);
+    const ext = basename.slice(dotIndex + 1);
+    const extensionVariants = uniqueItems([
+      ext,
+      ext.toLowerCase(),
+      ext.toUpperCase(),
+      ext.charAt(0).toUpperCase() + ext.slice(1).toLowerCase()
+    ]);
+
+    extensionVariants.forEach((variant) => {
+      candidates.push(`${dir}${stem}.${variant}`);
+      candidates.push(`${stem}.${variant}`);
+    });
+  }
+
+  return uniqueItems(candidates);
+}
+
+function buildPlaceholderDataUri(label) {
+  const safeLabel = String(label || "IMAGE").slice(0, 60);
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+      <rect width="1200" height="675" rx="32" fill="#f1f1f1"/>
+      <rect x="24" y="24" width="1152" height="627" rx="28" fill="#fafafa" stroke="#d8d8d8" stroke-width="6"/>
+      <text x="600" y="320" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="800" fill="#555">${safeLabel}</text>
+      <text x="600" y="385" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="30" fill="#777">Image not found at provided path</text>
+    </svg>
+  `;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
+function setManagedImage(imgElement, desiredPath, altText, placeholderLabel) {
+  if (!imgElement) {
+    return;
+  }
+
+  const candidates = buildImageCandidates(desiredPath);
+  let candidateIndex = 0;
+
+  imgElement.alt = altText || "";
+  imgElement.dataset.originalPath = desiredPath || "";
+
+  const tryNextSource = () => {
+    if (candidateIndex < candidates.length) {
+      imgElement.src = candidates[candidateIndex];
+      candidateIndex += 1;
+      return;
+    }
+
+    imgElement.onerror = null;
+    imgElement.src = buildPlaceholderDataUri(placeholderLabel || altText || "IMAGE");
+  };
+
+  imgElement.onerror = tryNextSource;
+  tryNextSource();
+}
+
 function renderQuestions() {
   const savedAnswers = getSavedAnswers();
 
@@ -129,8 +204,7 @@ function findMatchFromAnswers(answers) {
 }
 
 function openResultModal(match) {
-  resultImage.src = match.image;
-  resultImage.alt = `${match.name} result image`;
+  setManagedImage(resultImage, match.image, `${match.name} result image`, match.name);
   resultName.textContent = match.name;
   resultText.innerHTML = match.text.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
   resultModal.classList.remove("hidden");
@@ -146,8 +220,7 @@ function closeResultModal() {
 
 function openSideAdModal(ad) {
   sideAdModalTitle.textContent = ad.title;
-  sideAdModalImage.src = ad.modalImage;
-  sideAdModalImage.alt = `${ad.title} expanded ad`;
+  setManagedImage(sideAdModalImage, ad.modalImage, `${ad.title} expanded ad`, ad.title);
   sideAdModalText.innerHTML = (ad.copy || []).map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
   sideAdModal.classList.remove("hidden");
   sideAdModal.setAttribute("aria-hidden", "false");
@@ -213,6 +286,9 @@ function randomBetween(min, max) {
 }
 
 function randomItem(items) {
+  if (!Array.isArray(items) || items.length === 0) {
+    return null;
+  }
   return items[Math.floor(Math.random() * items.length)];
 }
 
@@ -377,7 +453,6 @@ function startAdEngine() {
   }
 
   adEngineStarted = true;
-  startSideAdRotation();
   scheduleNextPopup();
 }
 
@@ -555,6 +630,16 @@ function pausePopupSpawns(ms) {
   popupsDisabledUntil = Date.now() + ms;
 }
 
+function fillPopupImage(contentContainer, popupImage, title) {
+  contentContainer.innerHTML = `
+    <img class="ad-window-image" alt="${escapeHtml(title)}" />
+    <p class="ad-window-copy"></p>
+  `;
+  const img = contentContainer.querySelector(".ad-window-image");
+  setManagedImage(img, popupImage, title, title);
+  return contentContainer.querySelector(".ad-window-copy");
+}
+
 function openDefaultPopupAd(forcedAd = null) {
   const ad = forcedAd || randomItem(POPUP_ADS.filter((item) => item.type === "default"));
   const popup = createPopupShell(ad.title);
@@ -563,10 +648,8 @@ function openDefaultPopupAd(forcedAd = null) {
   const closeButton = popup.querySelector(".ad-window-close");
   const popupImage = getPopupImageForAd(ad);
 
-  content.innerHTML = `
-    <img class="ad-window-image" src="${escapeHtml(popupImage)}" alt="${escapeHtml(ad.title)}" />
-    <p class="ad-window-copy">${escapeHtml(ad.body)}</p>
-  `;
+  const copy = fillPopupImage(content, popupImage, ad.title);
+  copy.textContent = ad.body;
 
   actionRow.innerHTML = `<button class="ad-window-action" type="button">Learn More</button>`;
 
@@ -581,7 +664,6 @@ function createMultiplyFamily(ad) {
     ad,
     round: 0,
     openCount: 0,
-    pendingSpawn: false,
     finished: false
   };
 
@@ -622,8 +704,6 @@ function spawnMultiplyWave(family, count, parentLabel) {
     return;
   }
 
-  family.pendingSpawn = false;
-
   for (let i = 0; i < count; i += 1) {
     if (activePopupCount >= BURNFEED_CONFIG.maxSimultaneousPopups + 2) {
       break;
@@ -643,10 +723,9 @@ function buildMultiplyPopup(family, lineageLabel) {
 
   family.openCount += 1;
 
-  content.innerHTML = `
-    <img class="ad-window-image" src="${escapeHtml(popupImage)}" alt="${escapeHtml(ad.title)}" />
-    <p class="ad-window-copy">${escapeHtml(ad.body)} Round ${family.round + 1} of ${BURNFEED_CONFIG.multiplyPopupRounds + 1}. The next wave will not appear until every clone from this round is actually closed. Progress, somehow.</p>
-  `;
+  const copy = fillPopupImage(content, popupImage, ad.title);
+  copy.textContent = `${ad.body} Round ${family.round + 1} of ${BURNFEED_CONFIG.multiplyPopupRounds + 1}. The next wave will not appear until every clone from this round is actually closed. Progress, somehow.`;
+
   actionRow.innerHTML = `<button class="ad-window-action" type="button">Maybe Later</button>`;
 
   const close = () => {
@@ -861,8 +940,7 @@ function playJumpscareSound() {
 
 function triggerJumpscare(forcedAd = null) {
   const ad = forcedAd || randomItem(POPUP_ADS.filter((item) => item.type === "jumpscare"));
-  jumpscareImage.src = ad.image;
-  jumpscareImage.alt = ad.title;
+  setManagedImage(jumpscareImage, ad.image, ad.title, ad.title);
   jumpscareOverlay.classList.remove("hidden");
   jumpscareOverlay.setAttribute("aria-hidden", "false");
   playJumpscareSound();
@@ -884,8 +962,7 @@ function applySideAdImage(button, imagePath, fallbackTitle) {
   const clickableConfig = clickableSideAds[imagePath] || null;
   const buttonTitle = button.dataset.sideAdTitle || fallbackTitle || "Sponsored Ad";
 
-  image.src = imagePath;
-  image.alt = `${buttonTitle} rotating ad`;
+  setManagedImage(image, imagePath, `${buttonTitle} rotating ad`, buttonTitle);
   image.dataset.currentAdImage = imagePath;
 
   button.dataset.clickable = clickableConfig ? "true" : "false";
@@ -953,8 +1030,6 @@ function bindSideAdButtons() {
       });
     });
   });
-
-  rotateSideAds();
 }
 
 function primeAdEngineOnInteraction() {
@@ -1038,4 +1113,5 @@ document.addEventListener("keydown", (event) => {
 renderQuestions();
 attachPersistenceListeners();
 bindSideAdButtons();
+startSideAdRotation();
 primeAdEngineOnInteraction();
