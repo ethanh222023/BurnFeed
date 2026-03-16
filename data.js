@@ -395,66 +395,70 @@ const BURNFEED_CONFIG = {
   }
 };
 
+const SIDE_AD_IMAGE_POOL = [
+  "assets/ads/Ethan_ad.png",
+  "assets/ads/Scrat_ad2.jpg",
+  "assets/ads/Slade_gif.gif",
+  "assets/ads/Goob_gif.gif",
+  "assets/ads/Slade_ad2.jpg",
+  "assets/ads/Free_ad.jpg",
+  "assets/ads/15year_ad.jpg"
+];
+
+const CLICKABLE_SIDE_ADS = {
+  "assets/ads/Free_ad.jpg": {
+    modalImage: "assets/ads/Crispy_ad.png",
+    copy: [
+      "Put whatever larger image you want here for the Free ad popup.",
+      "This one is intentionally clickable because apparently we are curating ad lore now."
+    ]
+  },
+  "assets/ads/15year_ad.jpg": {
+    modalImage: "assets/ads/Goob_ad2.jpg",
+    copy: [
+      "Put whatever larger image you want here for the 15 year ad popup.",
+      "Only this and the Free ad should interrupt the user even more than usual."
+    ]
+  }
+};
+
 const SIDE_ADS = [
   {
     id: "left-banner",
-    title: "This Could Have Been A Nice Website",
-    thumbs: [
-      "assets/ads/Ethan_ad.png",
-      "assets/ads/Scrat_ad2.jpg",
-      "assets/ads/Slade_gif.gif",
-      "assets/ads/Goob_gif.gif",
-      "assets/ads/Goob_ad2.jpg",
-      "assets/ads/Crispy_ad.png",
-      "assets/ads/Slade_ad2.jpg",
-      "assets/ads/Free_ad.jpg",
-      "assets/ads/15year_ad.jpg",
-    ],
-    modalImage: "assets/ads/ad-popup.svg",
-    copy: [
-      "This is the expanded version of the left-side ad. Replace the image here with whatever fake sponsor or cursed graphic you want.",
-      "The user must close this before getting back to the quiz, which is an elegant way to disrespect their attention span."
-    ]
+    title: "This Could Have Been A Nice Website"
   },
   {
     id: "right-banner",
-    title: "Premium Distraction Experience",
-    thumbs: [
-      "assets/ads/side-ad-2.svg",
-      "assets/ads/side-ad-4.svg",
-      "assets/ads/side-ad-1.svg"
-    ],
-    modalImage: "assets/ads/ad-popup.svg",
-    copy: [
-      "This is the expanded version of the right-side ad. Swap in your own image later to make the interruption feel truly personal.",
-      "It exists for the noble purpose of making a simple quiz feel like crossing a highway in flip-flops."
-    ]
+    title: "Premium Distraction Experience"
   }
+];
+
+const POPUP_AD_IMAGE_POOL = [
+  "assets/ads/Spencer_ad.jpg",
+  "assets/ads/Sigeti_ad.jpg",
+  "assets/ads/Scrat_ad1.png",
+  "assets/ads/Spencer_ad2.jpg"
 ];
 
 const POPUP_ADS = [
   {
     type: "default",
     title: "Singles Near Literally Anywhere",
-    image: "assets/ads/Spencer_ad.jpg",
     body: "A normal popup ad. The user can close it like a reasonable nuisance."
   },
   {
     type: "default",
     title: "Doctors Hate This Quiz",
-    image: "assets/ads/Sigeti_ad.jpg",
     body: "Another plain popup, because repetition is the soul of bad design."
   },
   {
     type: "multiply",
     title: "Congratulations, You Clicked Nothing",
-    image: "assets/ads/Scrat_ad1.png",
     body: "Closing this ad creates two more. It is inspired by malware and the human condition."
   },
   {
     type: "multiply",
     title: "Your Device Is Probably Fine",
-    image: "assets/ads/Spencer_ad2.jpg",
     body: "Every close button is merely a suggestion. Two fresh popups will rise from its ashes."
   },
   {
