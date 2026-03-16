@@ -382,7 +382,7 @@ function getResolvedClickableSideAds() {
       ]
     },
     "assets/ads/15year_ad.jpg": {
-      modalImage: "assets/ads/15year_ad_popup.jpg",
+      modalImage: "assets/ads/Goob_ad2.JPG",
       copy: [
         "Replace this with whatever larger image you want for the 15 year ad popup.",
         "Only this and the Free ad are supposed to interrupt people even more than the rest."
