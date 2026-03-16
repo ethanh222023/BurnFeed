@@ -44,36 +44,57 @@ function uniqueItems(items) {
   return [...new Set(items.filter(Boolean))];
 }
 
+function buildCaseVariants(value) {
+  if (!value) {
+    return [];
+  }
+
+  return uniqueItems([
+    value,
+    value.toLowerCase(),
+    value.toUpperCase(),
+    value.charAt(0).toUpperCase() + value.slice(1),
+    value.charAt(0).toLowerCase() + value.slice(1)
+  ]);
+}
+
 function buildImageCandidates(path) {
   if (!path) {
     return [];
   }
 
-  const candidates = [path];
   const slashIndex = path.lastIndexOf("/");
   const basename = slashIndex >= 0 ? path.slice(slashIndex + 1) : path;
   const dir = slashIndex >= 0 ? path.slice(0, slashIndex + 1) : "";
   const dotIndex = basename.lastIndexOf(".");
+  const candidates = [path, basename];
 
-  candidates.push(basename);
+  const directoryVariants = uniqueItems([
+    dir,
+    dir.replace(/^\.\//, ""),
+    dir.replace(/^assets\/ads\//i, ""),
+    dir.replace(/^assets\/matches\//i, ""),
+    "assets/ads/",
+    "assets/matches/",
+    ""
+  ]);
 
   if (dotIndex > 0) {
     const stem = basename.slice(0, dotIndex);
     const ext = basename.slice(dotIndex + 1);
-    const extensionVariants = uniqueItems([
-      ext,
-      ext.toLowerCase(),
-      ext.toUpperCase(),
-      ext.charAt(0).toUpperCase() + ext.slice(1).toLowerCase()
-    ]);
+    const stemVariants = buildCaseVariants(stem);
+    const extensionVariants = buildCaseVariants(ext);
 
-    extensionVariants.forEach((variant) => {
-      candidates.push(`${dir}${stem}.${variant}`);
-      candidates.push(`${stem}.${variant}`);
+    directoryVariants.forEach((dirVariant) => {
+      stemVariants.forEach((stemVariant) => {
+        extensionVariants.forEach((extVariant) => {
+          candidates.push(`${dirVariant}${stemVariant}.${extVariant}`);
+        });
+      });
     });
   }
 
-  return uniqueItems(candidates);
+  return uniqueItems(candidates.filter(Boolean));
 }
 
 function buildPlaceholderDataUri(label) {
@@ -302,23 +323,54 @@ function randomItemExcluding(items, excludedValue = null) {
   return filtered[Math.floor(Math.random() * filtered.length)];
 }
 
+function resolveGlobalArray(name, fallback = []) {
+  const directValue = typeof globalThis[name] !== "undefined" ? globalThis[name] : undefined;
+  if (Array.isArray(directValue) && directValue.length > 0) {
+    return directValue.slice();
+  }
+
+  try {
+    const lexicalValue = Function(`return typeof ${name} !== "undefined" ? ${name} : undefined;`)();
+    if (Array.isArray(lexicalValue) && lexicalValue.length > 0) {
+      return lexicalValue.slice();
+    }
+  } catch (error) {}
+
+  return Array.isArray(fallback) ? fallback.slice() : [];
+}
+
+function resolveGlobalObject(name, fallback = null) {
+  const directValue = typeof globalThis[name] !== "undefined" ? globalThis[name] : undefined;
+  if (directValue && typeof directValue === "object") {
+    return directValue;
+  }
+
+  try {
+    const lexicalValue = Function(`return typeof ${name} !== "undefined" ? ${name} : undefined;`)();
+    if (lexicalValue && typeof lexicalValue === "object") {
+      return lexicalValue;
+    }
+  } catch (error) {}
+
+  return fallback;
+}
+
 function getResolvedSideAdImagePool() {
-  if (typeof SIDE_AD_IMAGE_POOL !== "undefined" && Array.isArray(SIDE_AD_IMAGE_POOL) && SIDE_AD_IMAGE_POOL.length > 0) {
-    return SIDE_AD_IMAGE_POOL.slice();
+  const resolved = resolveGlobalArray("SIDE_AD_IMAGE_POOL");
+  if (resolved.length > 0) {
+    return resolved;
   }
 
-  if (typeof SIDE_ADS !== "undefined" && Array.isArray(SIDE_ADS)) {
-    return SIDE_ADS
-      .flatMap((ad) => Array.isArray(ad.thumbs) ? ad.thumbs : [])
-      .filter(Boolean);
-  }
-
-  return [];
+  const sideAds = resolveGlobalArray("SIDE_ADS");
+  return sideAds
+    .flatMap((ad) => Array.isArray(ad.thumbs) ? ad.thumbs : [])
+    .filter(Boolean);
 }
 
 function getResolvedClickableSideAds() {
-  if (typeof CLICKABLE_SIDE_ADS !== "undefined" && CLICKABLE_SIDE_ADS && typeof CLICKABLE_SIDE_ADS === "object") {
-    return CLICKABLE_SIDE_ADS;
+  const resolved = resolveGlobalObject("CLICKABLE_SIDE_ADS", null);
+  if (resolved) {
+    return resolved;
   }
 
   return {
@@ -340,17 +392,15 @@ function getResolvedClickableSideAds() {
 }
 
 function getResolvedPopupAdImagePool() {
-  if (typeof POPUP_AD_IMAGE_POOL !== "undefined" && Array.isArray(POPUP_AD_IMAGE_POOL) && POPUP_AD_IMAGE_POOL.length > 0) {
-    return POPUP_AD_IMAGE_POOL.slice();
+  const resolved = resolveGlobalArray("POPUP_AD_IMAGE_POOL");
+  if (resolved.length > 0) {
+    return resolved;
   }
 
-  if (typeof POPUP_ADS !== "undefined" && Array.isArray(POPUP_ADS)) {
-    return POPUP_ADS
-      .filter((ad) => ad && ad.type !== "jumpscare" && ad.image)
-      .map((ad) => ad.image);
-  }
-
-  return [];
+  const popupAds = resolveGlobalArray("POPUP_ADS");
+  return popupAds
+    .filter((ad) => ad && ad.type !== "jumpscare" && ad.image)
+    .map((ad) => ad.image);
 }
 
 function getRandomSideAdPair() {
@@ -1005,7 +1055,8 @@ function bindSideAdButtons() {
 
   buttons.forEach((button) => {
     const adIndex = Number(button.dataset.sideAdIndex);
-    const ad = Array.isArray(SIDE_ADS) ? SIDE_ADS[adIndex] : null;
+    const resolvedSideAds = resolveGlobalArray("SIDE_ADS");
+    const ad = Array.isArray(resolvedSideAds) ? resolvedSideAds[adIndex] : null;
 
     if (ad) {
       button.dataset.sideAdTitle = ad.title || `Side ad ${adIndex + 1}`;
@@ -1110,8 +1161,16 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-renderQuestions();
-attachPersistenceListeners();
-bindSideAdButtons();
-startSideAdRotation();
-primeAdEngineOnInteraction();
+function initializeBurnfeed() {
+  renderQuestions();
+  attachPersistenceListeners();
+  bindSideAdButtons();
+  startSideAdRotation();
+  primeAdEngineOnInteraction();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initializeBurnfeed, { once: true });
+} else {
+  initializeBurnfeed();
+}

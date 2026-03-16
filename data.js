@@ -478,3 +478,13 @@ Object.assign(BURNFEED_CONFIG, {
   jumpscareDurationMs: 300,
   sideAdModalLockScroll: true
 });
+
+
+globalThis.QUIZ_QUESTIONS = QUIZ_QUESTIONS;
+globalThis.MATCHES = MATCHES;
+globalThis.BURNFEED_CONFIG = BURNFEED_CONFIG;
+globalThis.SIDE_AD_IMAGE_POOL = SIDE_AD_IMAGE_POOL;
+globalThis.CLICKABLE_SIDE_ADS = CLICKABLE_SIDE_ADS;
+globalThis.SIDE_ADS = SIDE_ADS;
+globalThis.POPUP_AD_IMAGE_POOL = POPUP_AD_IMAGE_POOL;
+globalThis.POPUP_ADS = POPUP_ADS;
