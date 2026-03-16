@@ -303,12 +303,12 @@ function randomItemExcluding(items, excludedValue = null) {
 }
 
 function getResolvedSideAdImagePool() {
-  if (Array.isArray(window.SIDE_AD_IMAGE_POOL) && window.SIDE_AD_IMAGE_POOL.length > 0) {
-    return window.SIDE_AD_IMAGE_POOL.slice();
+  if (typeof SIDE_AD_IMAGE_POOL !== "undefined" && Array.isArray(SIDE_AD_IMAGE_POOL) && SIDE_AD_IMAGE_POOL.length > 0) {
+    return SIDE_AD_IMAGE_POOL.slice();
   }
 
-  if (Array.isArray(window.SIDE_ADS)) {
-    return window.SIDE_ADS
+  if (typeof SIDE_ADS !== "undefined" && Array.isArray(SIDE_ADS)) {
+    return SIDE_ADS
       .flatMap((ad) => Array.isArray(ad.thumbs) ? ad.thumbs : [])
       .filter(Boolean);
   }
@@ -317,8 +317,8 @@ function getResolvedSideAdImagePool() {
 }
 
 function getResolvedClickableSideAds() {
-  if (window.CLICKABLE_SIDE_ADS && typeof window.CLICKABLE_SIDE_ADS === "object") {
-    return window.CLICKABLE_SIDE_ADS;
+  if (typeof CLICKABLE_SIDE_ADS !== "undefined" && CLICKABLE_SIDE_ADS && typeof CLICKABLE_SIDE_ADS === "object") {
+    return CLICKABLE_SIDE_ADS;
   }
 
   return {
@@ -340,12 +340,12 @@ function getResolvedClickableSideAds() {
 }
 
 function getResolvedPopupAdImagePool() {
-  if (Array.isArray(window.POPUP_AD_IMAGE_POOL) && window.POPUP_AD_IMAGE_POOL.length > 0) {
-    return window.POPUP_AD_IMAGE_POOL.slice();
+  if (typeof POPUP_AD_IMAGE_POOL !== "undefined" && Array.isArray(POPUP_AD_IMAGE_POOL) && POPUP_AD_IMAGE_POOL.length > 0) {
+    return POPUP_AD_IMAGE_POOL.slice();
   }
 
-  if (Array.isArray(window.POPUP_ADS)) {
-    return window.POPUP_ADS
+  if (typeof POPUP_ADS !== "undefined" && Array.isArray(POPUP_ADS)) {
+    return POPUP_ADS
       .filter((ad) => ad && ad.type !== "jumpscare" && ad.image)
       .map((ad) => ad.image);
   }
