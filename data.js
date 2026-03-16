@@ -104,281 +104,281 @@ const QUIZ_QUESTIONS = [
 const MATCHES = [
   {
     id: 1,
-    name: "Avery",
-    image: "assets/matches/placeholder.svg",
+    name: "AOC",
+    image: "assets/matches/AOC.jpg",
     text: [
-      "Avery has the kind of smile that could get away with light treason and still have you offering them a jacket. They flirt like they've been professionally trained by rom-coms and a tiny bit of arrogance.",
+      "AOC has the kind of smile that could get away with light treason and still have you offering them a jacket. They flirt like they've been professionally trained by rom-coms and a tiny bit of arrogance.",
       "You two work because Avery makes everything feel like an event, even standing in line for coffee. They'll hype you up, steal one bite of your food, and somehow make that feel intimate instead of criminal."
     ]
   },
   {
     id: 2,
-    name: "Blake",
-    image: "assets/matches/placeholder.svg",
+    name: "Alex",
+    image: "assets/matches/Alex.png",
     text: [
-      "Blake has dangerous forearm energy and the deeply unfair habit of remembering every little thing you say. You mention one childhood snack once, and suddenly it's waiting for you on the passenger seat.",
+      "Alex has dangerous forearm energy and the deeply unfair habit of remembering every little thing you say. You mention one childhood snack once, and suddenly it's waiting for you on the passenger seat.",
       "This match is giving banter, loyalty, and the exact kind of eye contact that should probably require a permit. Blake will roast you lightly, then look at you like you're the best plot twist of the year."
     ]
   },
   {
     id: 3,
-    name: "Casey",
-    image: "assets/matches/placeholder.svg",
+    name: "Alper",
+    image: "assets/matches/Alper.jpg",
     text: [
-      "Casey is equal parts chaos and competence, which is a disgusting combination because it is wildly attractive. They'd forget where their keys are, then flawlessly plan a weekend trip in six minutes.",
+      "Alper is equal parts chaos and competence, which is a disgusting combination because it is wildly attractive. They'd forget where their keys are, then flawlessly plan a weekend trip in six minutes.",
       "You're matched because Casey keeps your life interesting without turning it into a small disaster. They flirt by making you laugh so hard you accidentally reveal your feelings. Rude, but effective."
     ]
   },
   {
     id: 4,
-    name: "Dakota",
-    image: "assets/matches/placeholder.svg",
+    name: "Ben",
+    image: "assets/matches/Ben.jpg",
     text: [
-      "Dakota has calm, magnetic energy, like they know exactly what they're doing and refuse to explain it. Their version of romance is subtle, sharp, and just smug enough to keep you leaning in.",
-      "This pairing works because Dakota grounds you without ever being boring. They're the type to open the car door, hand you your favorite drink, and pretend that level of charm is normal human behavior."
+      "Ben has calm, magnetic energy, like they know exactly what they're doing and refuse to explain it. Their version of romance is subtle, sharp, and just smug enough to keep you leaning in.",
+      "This pairing works because Ben grounds you without ever being boring. They're the type to open the car door, hand you your favorite drink, and pretend that level of charm is normal human behavior."
     ]
   },
   {
     id: 5,
-    name: "Emerson",
-    image: "assets/matches/placeholder.svg",
+    name: "Brady",
+    image: "assets/matches/Brady.png",
     text: [
-      "Emerson looks like they were built in a lab to ruin your concentration. Soft voice, stupidly good outfits, and the social confidence of someone who knows exactly how much damage they're doing.",
+      "Brady looks like they were built in a lab to ruin your concentration. Soft voice, stupidly good outfits, and the social confidence of someone who knows exactly how much damage they're doing.",
       "You fit because Emerson brings sweetness with just enough menace to keep things lively. They'll flirt with a compliment, then follow it with a joke so you're never fully emotionally prepared."
     ]
   },
   {
     id: 6,
-    name: "Finley",
-    image: "assets/matches/placeholder.svg",
+    name: "Brandon",
+    image: "assets/matches/Brandon.jpg",
     text: [
-      "Finley is the human equivalent of a late-night drive with perfect music and one conversation that changes your brain chemistry. They're warm, witty, and way too good at reading your face.",
-      "This match has excellent chemistry because Finley makes you feel seen without making it weird. They'd absolutely brush hair out of your face and then act like they weren't just outrageously attractive on purpose."
+      "Brandon is the human equivalent of a late-night drive with perfect music and one conversation that changes your brain chemistry. They're warm, witty, and way too good at reading your face.",
+      "This match has excellent chemistry because Brandon makes you feel seen without making it weird. They'd absolutely brush hair out of your face and then act like they weren't just outrageously attractive on purpose."
     ]
   },
   {
     id: 7,
-    name: "Gray",
-    image: "assets/matches/placeholder.svg",
+    name: "Bruther",
+    image: "assets/matches/Bruther.jpg",
     text: [
-      "Gray is cool in that effortless way that makes everyone else look like they're trying too hard. Their flirting strategy is mostly smirking, showing up, and somehow being better at everything than is polite.",
-      "You're a fit because Gray likes someone who can keep up. The vibe here is equal parts tension and teamwork, with just enough mock rivalry to make every conversation feel like foreplay with better punctuation."
+      "Bruther is cool in that effortless way that makes everyone else look like they're trying too hard. Their flirting strategy is mostly smirking, showing up, and somehow being better at everything than is polite.",
+      "You're a fit because Bruther likes someone who can keep up. The vibe here is equal parts tension and teamwork, with just enough mock rivalry to make every conversation feel like foreplay with better punctuation."
     ]
   },
   {
     id: 8,
-    name: "Harper",
-    image: "assets/matches/placeholder.svg",
+    name: "Carter",
+    image: "assets/matches/Carter.jpg",
     text: [
-      "Harper has golden-retriever charisma in a very good jacket. They'll drag you into fun plans, make friends with strangers, and then look back for you first like the entire room was just filler content.",
-      "This pairing works because Harper keeps things bright without feeling shallow. They're romantic in a surprisingly attentive way, which means flowers, forehead kisses, and at least one dramatic grocery-store dance moment."
+      "Carter has golden-retriever charisma in a very good jacket. They'll drag you into fun plans, make friends with strangers, and then look back for you first like the entire room was just filler content.",
+      "This pairing works because Carter keeps things bright without feeling shallow. They're romantic in a surprisingly attentive way, which means flowers, forehead kisses, and at least one dramatic grocery-store dance moment."
     ]
   },
   {
     id: 9,
-    name: "Indigo",
-    image: "assets/matches/placeholder.svg",
+    name: "Coby",
+    image: "assets/matches/Coby.jpg",
     text: [
-      "Indigo seems mysterious until they start laughing, then suddenly the whole act falls apart in the best way. They're sharp, observant, and carry the exact amount of emotional depth needed to be dangerous.",
-      "You're matched because Indigo turns quiet moments into the main event. They'd sit beside you in complete silence, bump your knee against theirs, and somehow that would be more intimate than half the world's relationships."
+      "Coby seems mysterious until they start laughing, then suddenly the whole act falls apart in the best way. They're sharp, observant, and carry the exact amount of emotional depth needed to be dangerous.",
+      "You're matched because Coby turns quiet moments into the main event. They'd sit beside you in complete silence, bump your knee against theirs, and somehow that would be more intimate than half the world's relationships."
     ]
   },
   {
     id: 10,
-    name: "Jules",
-    image: "assets/matches/placeholder.svg",
+    name: "Crispy",
+    image: "assets/matches/Crispy.jpg",
     text: [
-      "Jules is a flirt disguised as a responsible person. They answer texts, make reservations, and still manage to radiate the kind of charm that makes your friends narrow their eyes suspiciously.",
-      "This is a strong match because Jules gives effort without making it look performative. They'd remember your exam date, hype you up, and then celebrate afterward like your success was their favorite hobby."
+      "Crispy is a flirt disguised as a responsible person. They answer texts, make reservations, and still manage to radiate the kind of charm that makes your friends narrow their eyes suspiciously.",
+      "This is a strong match because Crispy gives effort without making it look performative. They'd remember your exam date, hype you up, and then celebrate afterward like your success was their favorite hobby."
     ]
   },
   {
     id: 11,
-    name: "Kai",
-    image: "assets/matches/placeholder.svg",
+    name: "Ethan",
+    image: "assets/matches/Ethan.jpg",
     text: [
-      "Kai is built for slow-burn romance and irritating levels of physical attractiveness. They somehow make hoodies, eye contact, and asking if you got home safe feel like elite-level courtship.",
-      "You're paired with Kai because they bring stability with just enough spark to keep your pulse involved. Their flirting style is protective, teasing, and one hundred percent designed to leave you staring at the wall afterward."
+      "Ethan is built for slow-burn romance and irritating levels of physical attractiveness. They somehow make hoodies, eye contact, and asking if you got home safe feel like elite-level courtship.",
+      "You're paired with Ethan because they bring stability with just enough spark to keep your pulse involved. Their flirting style is protective, teasing, and one hundred percent designed to leave you staring at the wall afterward."
     ]
   },
   {
     id: 12,
-    name: "Logan",
-    image: "assets/matches/placeholder.svg",
+    name: "Matthew",
+    image: "assets/matches/Friedberg.jpg",
     text: [
-      "Logan has the energy of someone who'd carry all your bags and then make you laugh the entire walk back. They are charming in a low-maintenance, suspiciously effective way.",
-      "This match works because Logan makes affection feel easy. They'll send you a terrible meme, then follow up with a genuinely thoughtful check-in, which is annoyingly compelling and frankly unfair to the rest of society."
+      "Matthew has the energy of someone who'd carry all your bags and then make you laugh the entire walk back. They are charming in a low-maintenance, suspiciously effective way.",
+      "This match works because Matthew makes affection feel easy. They'll send you a terrible meme, then follow up with a genuinely thoughtful check-in, which is annoyingly compelling and frankly unfair to the rest of society."
     ]
   },
   {
     id: 13,
-    name: "Morgan",
-    image: "assets/matches/placeholder.svg",
+    name: "Gavin",
+    image: "assets/matches/Gavin.jpg",
     text: [
-      "Morgan looks like they know a secret and you are absolutely desperate to hear it. Elegant, funny, and quietly devastating, they could ruin your sleep schedule with one grin.",
-      "You're a fit because Morgan brings serious chemistry and zero dull moments. They flirt like every sentence has layers, which means you'll spend half your time laughing and the other half realizing that was definitely a double meaning."
+      "Gavin looks like they know a secret and you are absolutely desperate to hear it. Elegant, funny, and quietly devastating, they could ruin your sleep schedule with one grin.",
+      "You're a fit because Gavin brings serious chemistry and zero dull moments. They flirt like every sentence has layers, which means you'll spend half your time laughing and the other half realizing that was definitely a double meaning."
     ]
   },
   {
     id: 14,
-    name: "Noel",
-    image: "assets/matches/placeholder.svg",
+    name: "Goob",
+    image: "assets/matches/Goob.png",
     text: [
-      "Noel is sweet in a way that makes people underestimate them, which is convenient because then they get to be funny, clever, and absurdly charming as a surprise attack.",
-      "This pairing has peak comfort-meets-spark energy. Noel will make your favorite snack appear out of nowhere, call you out when you're being dramatic, and still look at you like you're the prettiest inconvenience in the room."
+      "Goob is sweet in a way that makes people underestimate them, which is convenient because then they get to be funny, clever, and absurdly charming as a surprise attack.",
+      "This pairing has peak comfort-meets-spark energy. Goob will make your favorite snack appear out of nowhere, call you out when you're being dramatic, and still look at you like you're the prettiest inconvenience in the room."
     ]
   },
   {
     id: 15,
-    name: "Oakley",
-    image: "assets/matches/placeholder.svg",
+    name: "Holly",
+    image: "assets/matches/Holly.jpg",
     text: [
-      "Oakley has outdoorsy competence with indoor cuddle potential, a combination civilization is not prepared for. They can fix a tire, make a fire, and still flirt like a menace over brunch.",
-      "You two work because Oakley balances adventure with softness. They'll drag you into a ridiculous plan, then hand you a blanket and a snack like they personally intend to keep your nervous system regulated."
+      "Holly has outdoorsy competence with indoor cuddle potential, a combination civilization is not prepared for. They can fix a tire, make a fire, and still flirt like a menace over brunch.",
+      "You two work because Holly balances adventure with softness. They'll drag you into a ridiculous plan, then hand you a blanket and a snack like they personally intend to keep your nervous system regulated."
     ]
   },
   {
     id: 16,
-    name: "Parker",
-    image: "assets/matches/placeholder.svg",
+    name: "Ken",
+    image: "assets/matches/Ken.jpg",
     text: [
-      "Parker is the one your friends clock immediately because their face says trouble and their behavior says husband material. That kind of contradiction is catnip for the human brain apparently.",
-      "This match hits because Parker is playful without being flaky. Expect top-tier banter, arm-around-the-shoulder energy, and a level of attention that makes mediocre dating options look even more embarrassing than usual."
+      "Ken is the one your friends clock immediately because their face says trouble and their behavior says husband material. That kind of contradiction is catnip for the human brain apparently.",
+      "This match hits because Ken is playful without being flaky. Expect top-tier banter, arm-around-the-shoulder energy, and a level of attention that makes mediocre dating options look even more embarrassing than usual."
     ]
   },
   {
     id: 17,
-    name: "Quinn",
-    image: "assets/matches/placeholder.svg",
+    name: "Levi",
+    image: "assets/matches/Levi.png",
     text: [
-      "Quinn has a clean laugh, excellent timing, and just enough nerve to flirt in public without combusting. Their confidence is attractive because it's grounded, not because they're auditioning for a cologne ad.",
-      "You're matched because Quinn would absolutely become your favorite person to debrief life with. They make everyday routines feel intimate, which is dangerous, because now even errands will have chemistry."
+      "Levi has a clean laugh, excellent timing, and just enough nerve to flirt in public without combusting. Their confidence is attractive because it's grounded, not because they're auditioning for a cologne ad.",
+      "You're matched because Levi would absolutely become your favorite person to debrief life with. They make everyday routines feel intimate, which is dangerous, because now even errands will have chemistry."
     ]
   },
   {
     id: 18,
-    name: "Reese",
-    image: "assets/matches/placeholder.svg",
+    name: "Link",
+    image: "assets/matches/Link.jpg",
     text: [
-      "Reese is witty, stylish, and alarmingly good at saying exactly the thing that gets under your skin in a fun way. They flirt like a challenge and kiss like a reward, allegedly.",
-      "This pairing works because Reese keeps your attention without draining your peace. They know when to stir things up, when to soften, and when to hand you food before your mood becomes a public issue."
+      "Link is witty, stylish, and alarmingly good at saying exactly the thing that gets under your skin in a fun way. They flirt like a challenge and kiss like a reward, allegedly.",
+      "This pairing works because Link keeps your attention without draining your peace. They know when to stir things up, when to soften, and when to hand you food before your mood becomes a public issue."
     ]
   },
   {
     id: 19,
-    name: "Riley",
-    image: "assets/matches/placeholder.svg",
+    name: "Micah",
+    image: "assets/matches/Micah.png",
     text: [
-      "Riley is the sort of person who makes everyone feel comfortable, then quietly turns around and absolutely wrecks one specific person's emotional stability. Congratulations, that person is probably you.",
-      "You're a fit because Riley mixes gentleness with just enough flirtatious menace. They'll check in on your day, walk on the outside of the sidewalk, and then grin at you like they know exactly what that's doing."
+      "Micah is the sort of person who makes everyone feel comfortable, then quietly turns around and absolutely wrecks one specific person's emotional stability. Congratulations, that person is probably you.",
+      "You're a fit because Micah mixes gentleness with just enough flirtatious menace. They'll check in on your day, walk on the outside of the sidewalk, and then grin at you like they know exactly what that's doing."
     ]
   },
   {
     id: 20,
-    name: "Rowan",
-    image: "assets/matches/placeholder.svg",
+    name: "Muff",
+    image: "assets/matches/Muff.jpg",
     text: [
-      "Rowan has the moody, cinematic vibe people pretend they don't fall for and then absolutely do. Great hair, suspiciously good playlists, and a stare that should come with a warning label.",
-      "This match works because Rowan is all depth and payoff. They may look intense, but under that dramatic packaging is someone loyal, funny, and weirdly thrilled to make your life easier in small beautiful ways."
+      "Muff has the moody, cinematic vibe people pretend they don't fall for and then absolutely do. Great hair, suspiciously good playlists, and a stare that should come with a warning label.",
+      "This match works because Muff is all depth and payoff. They may look intense, but under that dramatic packaging is someone loyal, funny, and weirdly thrilled to make your life easier in small beautiful ways."
     ]
   },
   {
     id: 21,
-    name: "Sage",
-    image: "assets/matches/placeholder.svg",
+    name: "Piyush",
+    image: "assets/matches/Piyush.jpg",
     text: [
-      "Sage is charming without being loud about it, which somehow makes it hit harder. They listen closely, speak carefully, and then blindside you by being funnier than half the room.",
-      "You're paired with Sage because they bring balance to the nonsense. They have major hand-on-lower-back energy, elite taste in date ideas, and the exact right amount of emotional intelligence to be completely lethal."
+      "Piyush is charming without being loud about it, which somehow makes it hit harder. They listen closely, speak carefully, and then blindside you by being funnier than half the room.",
+      "You're paired with Piyush because they bring balance to the nonsense. They have major hand-on-lower-back energy, elite taste in date ideas, and the exact right amount of emotional intelligence to be completely lethal."
     ]
   },
   {
     id: 22,
-    name: "Sawyer",
-    image: "assets/matches/placeholder.svg",
+    name: "Pookie",
+    image: "assets/matches/Pookie.jpg",
     text: [
-      "Sawyer has chaotic flirt energy but organized life skills, which is exactly the kind of contradiction that gets people emotionally attached in record time. It's embarrassing, but there it is.",
-      "This pairing works because Sawyer keeps things playful while still showing up. They'll challenge you to ridiculous games, let you win once out of mercy, and then kiss you like they were planning that all along."
+      "Pookie has chaotic flirt energy but organized life skills, which is exactly the kind of contradiction that gets people emotionally attached in record time. It's embarrassing, but there it is.",
+      "This pairing works because Pookie keeps things playful while still showing up. They'll challenge you to ridiculous games, let you win once out of mercy, and then kiss you like they were planning that all along."
     ]
   },
   {
     id: 23,
-    name: "Shiloh",
-    image: "assets/matches/placeholder.svg",
+    name: "Aiden Reed",
+    image: "assets/matches/Reed.jpg",
     text: [
-      "Shiloh has quiet confidence and the kind of smile that makes rooms seem smaller. They're patient, observant, and very good at creating the illusion that you are the only person worth paying attention to.",
-      "You're matched because Shiloh is the soft-spoken problem your love life deserves. Expect thoughtful dates, subtle flirting, and a voice note that somehow turns your entire evening into a daydream."
+      "Aiden has quiet confidence and the kind of smile that makes rooms seem smaller. They're patient, observant, and very good at creating the illusion that you are the only person worth paying attention to.",
+      "You're matched because Aiden is the soft-spoken problem your love life deserves. Expect thoughtful dates, subtle flirting, and a voice note that somehow turns your entire evening into a daydream."
     ]
   },
   {
     id: 24,
-    name: "Skyler",
-    image: "assets/matches/placeholder.svg",
+    name: "Robbie",
+    image: "assets/matches/Robbie.jpg",
     text: [
-      "Skyler is pure magnetism with a side of nonsense. They look expensive, laugh loudly, and carry themselves like someone who knows life is short and chemistry should be entertaining.",
-      "This match works because Skyler makes bold feel safe. They'll tell you you're gorgeous like it's an objective fact, then drag you into a chaotic memory you'll both pretend happened naturally."
+      "Robbie is pure magnetism with a side of nonsense. They look expensive, laugh loudly, and carry themselves like someone who knows life is short and chemistry should be entertaining.",
+      "This match works because Robbie makes bold feel safe. They'll tell you you're gorgeous like it's an objective fact, then drag you into a chaotic memory you'll both pretend happened naturally."
     ]
   },
   {
     id: 25,
-    name: "Tatum",
-    image: "assets/matches/placeholder.svg",
+    name: "Scrat",
+    image: "assets/matches/Scrat.jpg",
     text: [
-      "Tatum is a little bit smug and completely justified about it. They're competent, affectionate, and very likely to text you something mildly flirty right when you were trying to be productive.",
-      "You're a match because Tatum thrives on chemistry with substance. They'll make you laugh, make you feel wanted, and make your standards rise enough to inconvenience future alternatives."
+      "Scrat is a little bit smug and completely justified about it. They're competent, affectionate, and very likely to text you something mildly flirty right when you were trying to be productive.",
+      "You're a match because Scrat thrives on chemistry with substance. They'll make you laugh, make you feel wanted, and make your standards rise enough to inconvenience future alternatives."
     ]
   },
   {
     id: 26,
-    name: "Val",
-    image: "assets/matches/placeholder.svg",
+    name: "Sigeti",
+    image: "assets/matches/Sigeti.jpg",
     text: [
-      "Val has romantic menace in the best possible way. Their whole thing is acting casual while doing devastatingly attentive things like handing you your favorite drink without asking.",
-      "This pairing works because Val is both fun and reliable, which is apparently rare enough to deserve a parade. Expect stupidly good chemistry, dramatic compliments, and one eyebrow raise that ruins your week."
+      "Sigeti has romantic menace in the best possible way. Their whole thing is acting casual while doing devastatingly attentive things like handing you your favorite drink without asking.",
+      "This pairing works because Sigeti is both fun and reliable, which is apparently rare enough to deserve a parade. Expect stupidly good chemistry, dramatic compliments, and one eyebrow raise that ruins your week."
     ]
   },
   {
     id: 27,
-    name: "Wren",
-    image: "assets/matches/placeholder.svg",
+    name: "Stick",
+    image: "assets/matches/Stick.png",
     text: [
-      "Wren is clever, warm, and just weird enough to make every conversation memorable. They'd absolutely flirt with you through recommendations, side comments, and one oddly specific observation that makes your stomach flip.",
-      "You're matched because Wren turns connection into an art form. They make ordinary moments sparkle, and somehow even splitting fries in a parking lot would feel like relationship propaganda."
+      "Stick is clever, warm, and just weird enough to make every conversation memorable. They'd absolutely flirt with you through recommendations, side comments, and one oddly specific observation that makes your stomach flip.",
+      "You're matched because Stick turns connection into an art form. They make ordinary moments sparkle, and somehow even splitting fries in a parking lot would feel like relationship propaganda."
     ]
   },
   {
     id: 28,
-    name: "Xan",
-    image: "assets/matches/placeholder.svg",
+    name: "Tate",
+    image: "assets/matches/Tate.jpg",
     text: [
-      "Xan has the dangerous mix of confidence and curiosity that makes you feel both challenged and adored. They ask good questions, give excellent reactions, and look at you like your opinions are somehow attractive.",
-      "This match works because Xan keeps you engaged and a little unsteady. They'll flirt with dry humor, pull you closer at exactly the right time, and generally behave like they understand pacing better than most screenwriters."
+      "Tate has the dangerous mix of confidence and curiosity that makes you feel both challenged and adored. They ask good questions, give excellent reactions, and look at you like your opinions are somehow attractive.",
+      "This match works because Tate keeps you engaged and a little unsteady. They'll flirt with dry humor, pull you closer at exactly the right time, and generally behave like they understand pacing better than most screenwriters."
     ]
   },
   {
     id: 29,
-    name: "Yael",
-    image: "assets/matches/placeholder.svg",
+    name: "Trent",
+    image: "assets/matches/Trent.jpg",
     text: [
-      "Yael is graceful until they start joking, then suddenly they're hilarious in a way that catches you off guard. Elegant menace, basically. Very unfortunate for your ability to remain normal.",
-      "You're paired with Yael because they blend tenderness with spark. They'll remember what matters to you, tease you when you deserve it, and kiss your forehead like it's a personal brand strategy."
+      "Trent is graceful until they start joking, then suddenly they're hilarious in a way that catches you off guard. Elegant menace, basically. Very unfortunate for your ability to remain normal.",
+      "You're paired with Trent because they blend tenderness with spark. They'll remember what matters to you, tease you when you deserve it, and kiss your forehead like it's a personal brand strategy."
     ]
   },
   {
     id: 30,
-    name: "Zuri",
-    image: "assets/matches/placeholder.svg",
+    name: "Vecino",
+    image: "assets/matches/Vecino.jpg",
     text: [
-      "Zuri has main-character confidence and the generosity to use it for good. They're stylish, affectionate, and perfectly aware that half their power is in the timing of a well-placed grin.",
-      "This pairing works because Zuri brings excitement without turning your life into nonsense. They'd make you feel adored in public, protected in private, and slightly dizzy the entire time."
+      "Vecino has main-character confidence and the generosity to use it for good. They're stylish, affectionate, and perfectly aware that half their power is in the timing of a well-placed grin.",
+      "This pairing works because Vecino brings excitement without turning your life into nonsense. They'd make you feel adored in public, protected in private, and slightly dizzy the entire time."
     ]
   },
   {
     id: 31,
-    name: "Nova",
-    image: "assets/matches/placeholder.svg",
+    name: "Trevor",
+    image: "assets/matches/Trevor.png",
     text: [
-      "Nova is the slow-smile, late-text, impossible-to-forget type. They're imaginative, annoyingly attractive, and way too good at making moments feel cinematic without trying too hard.",
-      "You're matched because Nova knows how to build tension and then actually deliver on it. They'll send a dangerous voice note, make eye contact like a sport, and leave you wondering how this got so flirty so fast."
+      "Trevor is the slow-smile, late-text, impossible-to-forget type. They're imaginative, annoyingly attractive, and way too good at making moments feel cinematic without trying too hard.",
+      "You're matched because Trevor knows how to build tension and then actually deliver on it. They'll send a dangerous voice note, make eye contact like a sport, and leave you wondering how this got so flirty so fast."
     ]
   }
 ];
@@ -400,9 +400,15 @@ const SIDE_ADS = [
     id: "left-banner",
     title: "This Could Have Been A Nice Website",
     thumbs: [
-      "assets/ads/side-ad-1.svg",
-      "assets/ads/side-ad-3.svg",
-      "assets/ads/side-ad-2.svg"
+      "assets/ads/Ethan_ad.png",
+      "assets/ads/Scrat_ad2.jpg",
+      "assets/ads/Slade_gif.gif",
+      "assets/ads/Goob_gif.gif",
+      "assets/ads/Goob_ad2.jpg",
+      "assets/ads/Crispy_ad.png",
+      "assets/ads/Slade_ad2.jpg",
+      "assets/ads/Free_ad.jpg",
+      "assets/ads/15year_ad.jpg",
     ],
     modalImage: "assets/ads/ad-popup.svg",
     copy: [
@@ -430,31 +436,31 @@ const POPUP_ADS = [
   {
     type: "default",
     title: "Singles Near Literally Anywhere",
-    image: "assets/ads/ad-popup.svg",
+    image: "assets/ads/Spencer_ad.jpg",
     body: "A normal popup ad. The user can close it like a reasonable nuisance."
   },
   {
     type: "default",
     title: "Doctors Hate This Quiz",
-    image: "assets/ads/ad-popup.svg",
+    image: "assets/ads/Sigeti_ad.jpg",
     body: "Another plain popup, because repetition is the soul of bad design."
   },
   {
     type: "multiply",
     title: "Congratulations, You Clicked Nothing",
-    image: "assets/ads/ad-popup.svg",
+    image: "assets/ads/Scrat_ad1.png",
     body: "Closing this ad creates two more. It is inspired by malware and the human condition."
   },
   {
     type: "multiply",
     title: "Your Device Is Probably Fine",
-    image: "assets/ads/ad-popup.svg",
+    image: "assets/ads/Spencer_ad2.jpg",
     body: "Every close button is merely a suggestion. Two fresh popups will rise from its ashes."
   },
   {
     type: "jumpscare",
     title: "Jumpscare Ad",
-    image: "assets/ads/jumpscare.svg",
+    image: "assets/ads/Asses_ad.jpg",
     body: "Shows briefly with loud audio and vanishes before anyone can process their regret."
   }
 ];
