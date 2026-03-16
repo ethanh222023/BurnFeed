@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BurnFeed Matchmaker Quiz</title>
+    <meta
+      name="description"
+      content="A BurnFeed-style matchmaker quiz with deterministic results and optional Google Form logging."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=PT+Serif:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="brand">BurnFeed</div>
+    </header>
+
+    <main class="page-shell">
+      <article class="quiz-card">
+        <p class="eyebrow">Personality Quiz • Love Quiz</p>
+        <h1 class="quiz-title">
+          Pretend We Are Your Matchmaker And We'll Reveal The Chaotic Cutie
+          You're Supposed To End Up With
+        </h1>
+        <p class="dek">
+          Pick 10 deeply scientific answers and we'll pair you with your destiny.
+          By science, naturally, we mean nonsense with excellent typography.
+        </p>
+
+        <section class="intro-block">
+          <div>
+            <p class="author-line">by BurnFeed Staff</p>
+            <p class="intro-copy">
+              This quiz works like a suspiciously confident friend who thinks they
+              can read your love life from your snack order. Your answers are turned
+              into a deterministic match, so the same choices always give the same
+              result. Humanity adores pretending chaos is fate.
+            </p>
+          </div>
+        </section>
+
+        <form id="quizForm" novalidate>
+          <div id="questionsContainer" class="questions-container"></div>
+
+          <div class="actions-row">
+            <button type="submit" class="primary-button">Submit Quiz</button>
+            <button type="button" id="resetKeepAnswersBtn" class="secondary-button hidden">
+              Try Again
+            </button>
+          </div>
+          <p id="formMessage" class="form-message" aria-live="polite"></p>
+        </form>
+      </article>
+    </main>
+
+    <div id="resultModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal-backdrop" data-close-modal="true"></div>
+      <div class="modal-panel" role="document">
+        <button id="closeModalBtn" class="modal-close" type="button" aria-label="Close result">×</button>
+        <img id="resultImage" class="result-image" src="" alt="Your match" />
+        <p class="result-label">Your BurnFeed match is...</p>
+        <h2 id="resultName" class="result-name"></h2>
+        <div id="resultText" class="result-text"></div>
+      </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

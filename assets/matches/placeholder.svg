@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="Placeholder image">
+  <rect width="1200" height="675" fill="#f6f1ff"/>
+  <rect x="70" y="70" width="1060" height="535" rx="30" fill="#ffffff" stroke="#eadfff" stroke-width="10"/>
+  <text x="600" y="265" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="78" font-weight="700" fill="#ee3322">BurnFeed Match Image</text>
+  <text x="600" y="355" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="34" fill="#444444">Replace this file path in data.js with your real photo.</text>
+  <text x="600" y="415" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#666666">assets/matches/your-image-file.jpg</text>
+</svg>
