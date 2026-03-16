@@ -14,6 +14,8 @@ A static GitHub Pages-friendly website that mimics a BuzzFeed-style quiz, return
 - `assets/ads/side-ad-2.svg` - right side ad placeholder
 - `assets/ads/ad-popup.svg` - popup ad placeholder
 - `assets/ads/jumpscare.svg` - jumpscare placeholder image
+- `assets/ads/side-ad-3.svg` - extra rotating side ad placeholder
+- `assets/ads/side-ad-4.svg` - extra rotating side ad placeholder
 
 ## Quick setup for GitHub Pages
 
@@ -65,7 +67,7 @@ Example side ad object:
 {
   id: "left-banner",
   title: "This Could Have Been A Nice Website",
-  thumb: "assets/ads/side-ad-1.svg",
+  thumbs: ["assets/ads/side-ad-1.svg", "assets/ads/side-ad-3.svg"],
   modalImage: "assets/ads/ad-popup.svg",
   copy: ["Paragraph 1", "Paragraph 2"]
 }
@@ -89,9 +91,10 @@ At the bottom of `data.js`, these config values control the ad behavior:
 ```js
 popupIntervalMinMs: 5000,
 popupIntervalMaxMs: 15000,
+sideAdRotateMs: 10000,
 multiplyPopupRounds: 2,
 maxSimultaneousPopups: 4,
-jumpscareDurationMs: 260
+jumpscareDurationMs: 300
 ```
 
 Meaning:
@@ -100,6 +103,12 @@ Meaning:
 - `multiplyPopupRounds` controls how many generations the multiplying ad creates
 - `maxSimultaneousPopups` limits how many floating ads are allowed at once
 - `jumpscareDurationMs` controls how long the jumpscare image stays visible
+
+- `sideAdRotateMs` controls how often the giant side ads swap images
+
+### Important note on jumpscare audio
+
+The jumpscare sound is now more aggressive, layered, and louder *within browser limits*. Browsers still cannot override the user's operating system mute switch, hardware mute key, or device volume. In other words, even bad design has to obey physics and the OS.
 
 ## How deterministic matching works
 

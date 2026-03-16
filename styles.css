@@ -59,7 +59,7 @@ label {
 
 .page-shell {
   display: grid;
-  grid-template-columns: minmax(160px, 230px) minmax(0, 860px) minmax(160px, 230px);
+  grid-template-columns: minmax(240px, 320px) minmax(0, 860px) minmax(240px, 320px);
   gap: 24px;
   justify-content: center;
   align-items: start;
@@ -81,7 +81,7 @@ label {
 
 .side-ad-button img {
   width: 100%;
-  min-height: 420px;
+  min-height: 720px;
   object-fit: cover;
   border-radius: 20px;
   border: 1px solid var(--line);
@@ -323,7 +323,7 @@ label {
 
 .ad-window {
   position: fixed;
-  width: min(90vw, 360px);
+  width: min(92vw, 420px);
   background: #fff;
   border: 2px solid #d4d4d4;
   box-shadow: 0 24px 50px rgba(0, 0, 0, 0.24);
@@ -334,6 +334,7 @@ label {
 
 .ad-window-header {
   display: flex;
+  cursor: grab;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
@@ -386,6 +387,15 @@ label {
   font-weight: 700;
 }
 
+
+.ad-window.dragging {
+  user-select: none;
+}
+
+.ad-window.dragging .ad-window-header {
+  cursor: grabbing;
+}
+
 .jumpscare-overlay {
   position: fixed;
   inset: 0;
@@ -431,6 +441,6 @@ label {
   }
 
   .ad-window {
-    width: min(92vw, 340px);
+    width: min(94vw, 380px);
   }
 }

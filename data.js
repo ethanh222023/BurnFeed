@@ -393,7 +393,11 @@ const SIDE_ADS = [
   {
     id: "left-banner",
     title: "This Could Have Been A Nice Website",
-    thumb: "assets/ads/side-ad-1.svg",
+    thumbs: [
+      "assets/ads/side-ad-1.svg",
+      "assets/ads/side-ad-3.svg",
+      "assets/ads/side-ad-2.svg"
+    ],
     modalImage: "assets/ads/ad-popup.svg",
     copy: [
       "This is the expanded version of the left-side ad. Replace the image here with whatever fake sponsor or cursed graphic you want.",
@@ -403,7 +407,11 @@ const SIDE_ADS = [
   {
     id: "right-banner",
     title: "Premium Distraction Experience",
-    thumb: "assets/ads/side-ad-2.svg",
+    thumbs: [
+      "assets/ads/side-ad-2.svg",
+      "assets/ads/side-ad-4.svg",
+      "assets/ads/side-ad-1.svg"
+    ],
     modalImage: "assets/ads/ad-popup.svg",
     copy: [
       "This is the expanded version of the right-side ad. Swap in your own image later to make the interruption feel truly personal.",
@@ -448,8 +456,9 @@ const POPUP_ADS = [
 Object.assign(BURNFEED_CONFIG, {
   popupIntervalMinMs: 5000,
   popupIntervalMaxMs: 15000,
+  sideAdRotateMs: 10000,
   multiplyPopupRounds: 2,
   maxSimultaneousPopups: 4,
-  jumpscareDurationMs: 260,
+  jumpscareDurationMs: 300,
   sideAdModalLockScroll: true
 });

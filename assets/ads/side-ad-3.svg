@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1400" viewBox="0 0 800 1400" fill="none">
+  <rect width="800" height="1400" rx="36" fill="#FFF3B8"/>
+  <rect x="36" y="36" width="728" height="1328" rx="28" fill="#FFF" stroke="#111" stroke-width="8"/>
+  <rect x="80" y="90" width="640" height="520" rx="24" fill="#FFD54F"/>
+  <text x="400" y="230" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="800" fill="#111">SIDE AD</text>
+  <text x="400" y="320" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="800" fill="#111">ROTATION</text>
+  <text x="400" y="410" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="700" fill="#111">PLACEHOLDER 3</text>
+  <text x="400" y="740" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="110" font-weight="900" fill="#EE3322">BUY NOW</text>
+  <text x="400" y="870" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="56" font-weight="700" fill="#111">for no clear reason</text>
+  <rect x="160" y="1010" width="480" height="120" rx="60" fill="#5C45FF"/>
+  <text x="400" y="1087" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="800" fill="#FFF">CLICK ME</text>
+</svg>
