@@ -252,3 +252,14 @@ This structure is ready for the next round of feature creep, including:
 - timer-based fake urgency
 - custom transitions and animations
 - a fake "loading" sequence before the result appears
+
+
+## Custom jumpscare sound
+
+Put your audio file in `assets/ads/` and set the path in `data.js`:
+
+```js
+customJumpscareSound: "assets/ads/jumpscare-sound.mp3",
+```
+
+Use **MP3** if you want the safest browser support. WAV also works, but the file is usually much larger. OGG can work too, but MP3 is the least annoying choice.
