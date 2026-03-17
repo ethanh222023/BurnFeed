@@ -40,132 +40,60 @@ function setScrollLock(shouldLock) {
   document.body.classList.toggle("no-scroll", shouldLock);
 }
 
-function uniqueItems(items) {
-  return [...new Set(items.filter(Boolean))];
-}
-
-function buildCaseVariants(value) {
-  if (!value) {
-    return [];
-  }
-
-  return uniqueItems([
-    value,
-    value.toLowerCase(),
-    value.toUpperCase(),
-    value.charAt(0).toUpperCase() + value.slice(1),
-    value.charAt(0).toLowerCase() + value.slice(1)
-  ]);
-}
-
-function buildImageCandidates(path) {
-  if (!path) {
-    return [];
-  }
-
-  const slashIndex = path.lastIndexOf("/");
-  const basename = slashIndex >= 0 ? path.slice(slashIndex + 1) : path;
-  const dir = slashIndex >= 0 ? path.slice(0, slashIndex + 1) : "";
-  const dotIndex = basename.lastIndexOf(".");
-  const candidates = [path, basename];
-
-  const directoryVariants = uniqueItems([
-    dir,
-    dir.replace(/^\.\//, ""),
-    dir.replace(/^assets\/ads\//i, ""),
-    dir.replace(/^assets\/matches\//i, ""),
-    "assets/ads/",
-    "assets/matches/",
-    ""
-  ]);
-
-  if (dotIndex > 0) {
-    const stem = basename.slice(0, dotIndex);
-    const ext = basename.slice(dotIndex + 1);
-    const stemVariants = buildCaseVariants(stem);
-    const extensionVariants = buildCaseVariants(ext);
-
-    directoryVariants.forEach((dirVariant) => {
-      stemVariants.forEach((stemVariant) => {
-        extensionVariants.forEach((extVariant) => {
-          candidates.push(`${dirVariant}${stemVariant}.${extVariant}`);
-        });
-      });
-    });
-  }
-
-  return uniqueItems(candidates.filter(Boolean));
-}
-
-function buildPlaceholderDataUri(label) {
-  const safeLabel = String(label || "IMAGE").slice(0, 60);
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
-      <rect width="1200" height="675" rx="32" fill="#f1f1f1"/>
-      <rect x="24" y="24" width="1152" height="627" rx="28" fill="#fafafa" stroke="#d8d8d8" stroke-width="6"/>
-      <text x="600" y="320" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="800" fill="#555">${safeLabel}</text>
-      <text x="600" y="385" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="30" fill="#777">Image not found at provided path</text>
-    </svg>
-  `;
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-}
-
-function setManagedImage(imgElement, desiredPath, altText, placeholderLabel) {
-  if (!imgElement) {
-    return;
-  }
-
-  const candidates = buildImageCandidates(desiredPath);
-  let candidateIndex = 0;
-
-  imgElement.alt = altText || "";
-  imgElement.dataset.originalPath = desiredPath || "";
-
-  const tryNextSource = () => {
-    if (candidateIndex < candidates.length) {
-      imgElement.src = candidates[candidateIndex];
-      candidateIndex += 1;
-      return;
-    }
-
-    imgElement.onerror = null;
-    imgElement.src = buildPlaceholderDataUri(placeholderLabel || altText || "IMAGE");
-  };
-
-  imgElement.onerror = tryNextSource;
-  tryNextSource();
-}
-
 function renderQuestions() {
   const savedAnswers = getSavedAnswers();
 
   questionsContainer.innerHTML = QUIZ_QUESTIONS.map((question, index) => {
-    const optionsHtml = question.options
-      .map((option, optionIndex) => {
-        const optionId = `${question.id}-${optionIndex}`;
-        const checked = savedAnswers[question.id] === option ? "checked" : "";
+    const isText = question.type === "text";
+    const required = question.required !== false;
 
-        return `
-          <label class="option-label" for="${optionId}">
-            <input
-              type="radio"
-              id="${optionId}"
-              name="${question.id}"
-              value="${escapeHtml(option)}"
-              ${checked}
-              required
-            />
-            <span>${escapeHtml(option)}</span>
-          </label>
-        `;
-      })
-      .join("");
+    let inputHtml = "";
+
+    if (isText) {
+      const savedValue = escapeHtml(savedAnswers[question.id] || "");
+      inputHtml = `
+        <div class="text-response-wrap">
+          <label class="sr-only" for="${question.id}">${escapeHtml(question.question)}</label>
+          <textarea
+            id="${question.id}"
+            name="${question.id}"
+            class="text-response-input"
+            rows="${question.id === "q5" ? 3 : 4}"
+            placeholder="${escapeHtml(question.placeholder || "Type your answer here...")}"
+            ${required ? "required" : ""}
+          >${savedValue}</textarea>
+          ${required ? '<p class="text-response-note">Required</p>' : '<p class="text-response-note optional">Optional</p>'}
+        </div>
+      `;
+    } else {
+      inputHtml = `
+        <div class="option-list">
+          ${(question.options || []).map((option, optionIndex) => {
+            const optionId = `${question.id}-${optionIndex}`;
+            const checked = savedAnswers[question.id] === option ? "checked" : "";
+            return `
+              <label class="option-label" for="${optionId}">
+                <input
+                  type="radio"
+                  id="${optionId}"
+                  name="${question.id}"
+                  value="${escapeHtml(option)}"
+                  ${checked}
+                  ${required ? "required" : ""}
+                />
+                <span>${escapeHtml(option)}</span>
+              </label>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
 
     return `
       <section class="question-card">
         <p class="question-number">Question ${index + 1}</p>
         <h2 class="question-title">${escapeHtml(question.question)}</h2>
-        <div class="option-list">${optionsHtml}</div>
+        ${inputHtml}
       </section>
     `;
   }).join("");
@@ -196,14 +124,20 @@ function getFormAnswers() {
   const answers = {};
 
   QUIZ_QUESTIONS.forEach((question) => {
-    answers[question.id] = formData.get(question.id) || "";
+    const rawValue = formData.get(question.id);
+    answers[question.id] = typeof rawValue === "string" ? rawValue.trim() : "";
   });
 
   return answers;
 }
 
 function allQuestionsAnswered(answers) {
-  return QUIZ_QUESTIONS.every((question) => Boolean(answers[question.id]));
+  return QUIZ_QUESTIONS.every((question) => {
+    if (question.required === false) {
+      return true;
+    }
+    return Boolean(String(answers[question.id] || "").trim());
+  });
 }
 
 function deterministicHash(input) {
@@ -218,14 +152,18 @@ function deterministicHash(input) {
 }
 
 function findMatchFromAnswers(answers) {
-  const normalized = QUIZ_QUESTIONS.map((question) => `${question.id}:${answers[question.id]}`).join("|");
+  const matchQuestions = QUIZ_QUESTIONS.filter((question) => !["q1", "q5"].includes(question.id));
+  const normalized = matchQuestions
+    .map((question) => `${question.id}:${answers[question.id] || ""}`)
+    .join("|");
   const hash = deterministicHash(normalized);
   const matchIndex = hash % MATCHES.length;
   return MATCHES[matchIndex];
 }
 
 function openResultModal(match) {
-  setManagedImage(resultImage, match.image, `${match.name} result image`, match.name);
+  resultImage.src = match.image;
+  resultImage.alt = `${match.name} result image`;
   resultName.textContent = match.name;
   resultText.innerHTML = match.text.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
   resultModal.classList.remove("hidden");
@@ -241,8 +179,9 @@ function closeResultModal() {
 
 function openSideAdModal(ad) {
   sideAdModalTitle.textContent = ad.title;
-  setManagedImage(sideAdModalImage, ad.modalImage, `${ad.title} expanded ad`, ad.title);
-  sideAdModalText.innerHTML = (ad.copy || []).map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
+  sideAdModalImage.src = ad.modalImage;
+  sideAdModalImage.alt = `${ad.title} expanded ad`;
+  sideAdModalText.innerHTML = ad.copy.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
   sideAdModal.classList.remove("hidden");
   sideAdModal.setAttribute("aria-hidden", "false");
   setScrollLock(true);
@@ -294,10 +233,13 @@ function attachPersistenceListeners() {
     return;
   }
 
-  quizForm.addEventListener("change", () => {
+  const persist = () => {
     const answers = getFormAnswers();
     saveAnswers(answers);
-  });
+  };
+
+  quizForm.addEventListener("change", persist);
+  quizForm.addEventListener("input", persist);
 
   persistenceListenerAttached = true;
 }
@@ -307,130 +249,7 @@ function randomBetween(min, max) {
 }
 
 function randomItem(items) {
-  if (!Array.isArray(items) || items.length === 0) {
-    return null;
-  }
   return items[Math.floor(Math.random() * items.length)];
-}
-
-function randomItemExcluding(items, excludedValue = null) {
-  const filtered = items.filter((item) => item !== excludedValue);
-
-  if (filtered.length === 0) {
-    return excludedValue;
-  }
-
-  return filtered[Math.floor(Math.random() * filtered.length)];
-}
-
-function resolveGlobalArray(name, fallback = []) {
-  const directValue = typeof globalThis[name] !== "undefined" ? globalThis[name] : undefined;
-  if (Array.isArray(directValue) && directValue.length > 0) {
-    return directValue.slice();
-  }
-
-  try {
-    const lexicalValue = Function(`return typeof ${name} !== "undefined" ? ${name} : undefined;`)();
-    if (Array.isArray(lexicalValue) && lexicalValue.length > 0) {
-      return lexicalValue.slice();
-    }
-  } catch (error) {}
-
-  return Array.isArray(fallback) ? fallback.slice() : [];
-}
-
-function resolveGlobalObject(name, fallback = null) {
-  const directValue = typeof globalThis[name] !== "undefined" ? globalThis[name] : undefined;
-  if (directValue && typeof directValue === "object") {
-    return directValue;
-  }
-
-  try {
-    const lexicalValue = Function(`return typeof ${name} !== "undefined" ? ${name} : undefined;`)();
-    if (lexicalValue && typeof lexicalValue === "object") {
-      return lexicalValue;
-    }
-  } catch (error) {}
-
-  return fallback;
-}
-
-function getResolvedSideAdImagePool() {
-  const resolved = resolveGlobalArray("SIDE_AD_IMAGE_POOL");
-  if (resolved.length > 0) {
-    return resolved;
-  }
-
-  const sideAds = resolveGlobalArray("SIDE_ADS");
-  return sideAds
-    .flatMap((ad) => Array.isArray(ad.thumbs) ? ad.thumbs : [])
-    .filter(Boolean);
-}
-
-function getResolvedClickableSideAds() {
-  const resolved = resolveGlobalObject("CLICKABLE_SIDE_ADS", null);
-  if (resolved) {
-    return resolved;
-  }
-
-  return {
-    "assets/ads/Free_ad.jpg": {
-      modalImage: "assets/ads/Crispy_ad.PNG",
-      copy: [
-        "Replace this with whatever larger image you want for the Free ad popup.",
-        "This ad is clickable because apparently even fake banners need hierarchy."
-      ]
-    },
-    "assets/ads/15year_ad.jpg": {
-      modalImage: "assets/ads/Goob_ad2.JPG",
-      copy: [
-        "Replace this with whatever larger image you want for the 15 year ad popup.",
-        "Only this and the Free ad are supposed to interrupt people even more than the rest."
-      ]
-    }
-  };
-}
-
-function getResolvedPopupAdImagePool() {
-  const resolved = resolveGlobalArray("POPUP_AD_IMAGE_POOL");
-  if (resolved.length > 0) {
-    return resolved;
-  }
-
-  const popupAds = resolveGlobalArray("POPUP_ADS");
-  return popupAds
-    .filter((ad) => ad && ad.type !== "jumpscare" && ad.image)
-    .map((ad) => ad.image);
-}
-
-function getRandomSideAdPair() {
-  const pool = getResolvedSideAdImagePool();
-
-  if (pool.length === 0) {
-    return [null, null];
-  }
-
-  if (pool.length === 1) {
-    return [pool[0], pool[0]];
-  }
-
-  const first = randomItem(pool);
-  const second = randomItemExcluding(pool, first);
-  return [first, second];
-}
-
-function getPopupImageForAd(ad) {
-  if (ad.type === "jumpscare") {
-    return ad.image;
-  }
-
-  const pool = getResolvedPopupAdImagePool();
-
-  if (pool.length === 0) {
-    return ad.image || "";
-  }
-
-  return randomItem(pool);
 }
 
 function weightedRandomType(weights) {
@@ -503,6 +322,7 @@ function startAdEngine() {
   }
 
   adEngineStarted = true;
+  startSideAdRotation();
   scheduleNextPopup();
 }
 
@@ -663,7 +483,6 @@ function createPopupShell(title) {
   floatingAdsLayer.appendChild(popup);
   activePopupCount += 1;
   makePopupDraggable(popup);
-  bringPopupToFront(popup);
   return popup;
 }
 
@@ -680,26 +499,17 @@ function pausePopupSpawns(ms) {
   popupsDisabledUntil = Date.now() + ms;
 }
 
-function fillPopupImage(contentContainer, popupImage, title) {
-  contentContainer.innerHTML = `
-    <img class="ad-window-image" alt="${escapeHtml(title)}" />
-    <p class="ad-window-copy"></p>
-  `;
-  const img = contentContainer.querySelector(".ad-window-image");
-  setManagedImage(img, popupImage, title, title);
-  return contentContainer.querySelector(".ad-window-copy");
-}
-
 function openDefaultPopupAd(forcedAd = null) {
   const ad = forcedAd || randomItem(POPUP_ADS.filter((item) => item.type === "default"));
   const popup = createPopupShell(ad.title);
   const content = popup.querySelector(".ad-window-content");
   const actionRow = popup.querySelector(".ad-window-action-row");
   const closeButton = popup.querySelector(".ad-window-close");
-  const popupImage = getPopupImageForAd(ad);
 
-  const copy = fillPopupImage(content, popupImage, ad.title);
-  copy.textContent = ad.body;
+  content.innerHTML = `
+    <img class="ad-window-image" src="${escapeHtml(ad.image)}" alt="${escapeHtml(ad.title)}" />
+    <p class="ad-window-copy">${escapeHtml(ad.body)}</p>
+  `;
 
   actionRow.innerHTML = `<button class="ad-window-action" type="button">Learn More</button>`;
 
@@ -714,6 +524,7 @@ function createMultiplyFamily(ad) {
     ad,
     round: 0,
     openCount: 0,
+    pendingSpawn: false,
     finished: false
   };
 
@@ -754,6 +565,8 @@ function spawnMultiplyWave(family, count, parentLabel) {
     return;
   }
 
+  family.pendingSpawn = false;
+
   for (let i = 0; i < count; i += 1) {
     if (activePopupCount >= BURNFEED_CONFIG.maxSimultaneousPopups + 2) {
       break;
@@ -769,13 +582,13 @@ function buildMultiplyPopup(family, lineageLabel) {
   const content = popup.querySelector(".ad-window-content");
   const actionRow = popup.querySelector(".ad-window-action-row");
   const closeButton = popup.querySelector(".ad-window-close");
-  const popupImage = getPopupImageForAd(ad);
 
   family.openCount += 1;
 
-  const copy = fillPopupImage(content, popupImage, ad.title);
-  copy.textContent = `${ad.body} Round ${family.round + 1} of ${BURNFEED_CONFIG.multiplyPopupRounds + 1}. The next wave will not appear until every clone from this round is actually closed. Progress, somehow.`;
-
+  content.innerHTML = `
+    <img class="ad-window-image" src="${escapeHtml(ad.image)}" alt="${escapeHtml(ad.title)}" />
+    <p class="ad-window-copy">${escapeHtml(ad.body)} Round ${family.round + 1} of ${BURNFEED_CONFIG.multiplyPopupRounds + 1}. The next wave will not appear until every clone from this round is actually closed. Progress, somehow.</p>
+  `;
   actionRow.innerHTML = `<button class="ad-window-action" type="button">Maybe Later</button>`;
 
   const close = () => {
@@ -833,10 +646,12 @@ function playCustomJumpscareSound() {
       customJumpscareAudio.preload = "auto";
     }
 
-    if (customJumpscareAudio.paused === false) {
-      customJumpscareAudio.pause();
+    if (customJumpscareAudio.src !== new URL(customPath, window.location.href).href) {
+      customJumpscareAudio = new Audio(customPath);
+      customJumpscareAudio.preload = "auto";
     }
 
+    customJumpscareAudio.pause();
     customJumpscareAudio.currentTime = 0;
     customJumpscareAudio.volume = 1;
     customJumpscareAudio.play().catch((error) => {
@@ -990,7 +805,8 @@ function playJumpscareSound() {
 
 function triggerJumpscare(forcedAd = null) {
   const ad = forcedAd || randomItem(POPUP_ADS.filter((item) => item.type === "jumpscare"));
-  setManagedImage(jumpscareImage, ad.image, ad.title, ad.title);
+  jumpscareImage.src = ad.image;
+  jumpscareImage.alt = ad.title;
   jumpscareOverlay.classList.remove("hidden");
   jumpscareOverlay.setAttribute("aria-hidden", "false");
   playJumpscareSound();
@@ -1002,86 +818,49 @@ function triggerJumpscare(forcedAd = null) {
   }, BURNFEED_CONFIG.jumpscareDurationMs);
 }
 
-function applySideAdImage(button, imagePath, fallbackTitle) {
-  const image = button.querySelector("img");
-  if (!image || !imagePath) {
-    return;
-  }
-
-  const clickableSideAds = getResolvedClickableSideAds();
-  const clickableConfig = clickableSideAds[imagePath] || null;
-  const buttonTitle = button.dataset.sideAdTitle || fallbackTitle || "Sponsored Ad";
-
-  setManagedImage(image, imagePath, `${buttonTitle} rotating ad`, buttonTitle);
-  image.dataset.currentAdImage = imagePath;
-
-  button.dataset.clickable = clickableConfig ? "true" : "false";
-  button.classList.toggle("is-clickable", Boolean(clickableConfig));
-  button.setAttribute("aria-disabled", clickableConfig ? "false" : "true");
-}
-
 function rotateSideAds() {
-  const buttons = Array.from(document.querySelectorAll("[data-side-ad-index]"));
+  document.querySelectorAll("[data-side-ad-index]").forEach((button) => {
+    const adIndex = Number(button.dataset.sideAdIndex);
+    const ad = SIDE_ADS[adIndex];
+    const image = button.querySelector("img");
 
-  if (buttons.length === 0) {
-    return;
-  }
+    if (!ad || !image || !Array.isArray(ad.thumbs) || ad.thumbs.length === 0) {
+      return;
+    }
 
-  const [firstImage, secondImage] = getRandomSideAdPair();
-
-  if (buttons[0]) {
-    applySideAdImage(buttons[0], firstImage, "Left side ad");
-  }
-
-  if (buttons[1]) {
-    applySideAdImage(buttons[1], secondImage, "Right side ad");
-  }
-
-  for (let index = 2; index < buttons.length; index += 1) {
-    applySideAdImage(buttons[index], randomItemExcluding(getResolvedSideAdImagePool(), firstImage), `Side ad ${index + 1}`);
-  }
+    const currentIndex = Number(button.dataset.rotationIndex || "0");
+    const nextIndex = (currentIndex + 1) % ad.thumbs.length;
+    image.src = ad.thumbs[nextIndex];
+    image.alt = `${ad.title} rotating ad ${nextIndex + 1}`;
+    button.dataset.rotationIndex = String(nextIndex);
+  });
 }
 
 function startSideAdRotation() {
   if (sideAdRotationTimer) {
-    window.clearInterval(sideAdRotationTimer);
+    return;
   }
 
   rotateSideAds();
-  sideAdRotationTimer = window.setInterval(() => {
-    rotateSideAds();
-  }, BURNFEED_CONFIG.sideAdRotateMs || 10000);
+  sideAdRotationTimer = window.setInterval(rotateSideAds, BURNFEED_CONFIG.sideAdRotateMs || 10000);
 }
 
 function bindSideAdButtons() {
-  const buttons = document.querySelectorAll("[data-side-ad-index]");
-
-  buttons.forEach((button) => {
+  document.querySelectorAll("[data-side-ad-index]").forEach((button) => {
     const adIndex = Number(button.dataset.sideAdIndex);
-    const resolvedSideAds = resolveGlobalArray("SIDE_ADS");
-    const ad = Array.isArray(resolvedSideAds) ? resolvedSideAds[adIndex] : null;
+    const ad = SIDE_ADS[adIndex];
+    const image = button.querySelector("img");
 
-    if (ad) {
-      button.dataset.sideAdTitle = ad.title || `Side ad ${adIndex + 1}`;
+    if (ad && image && Array.isArray(ad.thumbs) && ad.thumbs.length > 0) {
+      image.src = ad.thumbs[0];
+      image.alt = `${ad.title} rotating ad 1`;
+      button.dataset.rotationIndex = "0";
     }
 
     button.addEventListener("click", () => {
-      if (button.dataset.clickable !== "true") {
-        return;
+      if (ad) {
+        openSideAdModal(ad);
       }
-
-      const currentImage = button.querySelector("img")?.dataset.currentAdImage;
-      const clickableConfig = getResolvedClickableSideAds()[currentImage];
-
-      if (!clickableConfig) {
-        return;
-      }
-
-      openSideAdModal({
-        title: ad?.title || "Sponsored Interruptions",
-        modalImage: clickableConfig.modalImage || currentImage,
-        copy: clickableConfig.copy || []
-      });
     });
   });
 }
@@ -1164,23 +943,7 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-function initializeBurnfeed() {
-  renderQuestions();
-  attachPersistenceListeners();
-  bindSideAdButtons();
-  rotateSideAds();
-  window.requestAnimationFrame(() => {
-    rotateSideAds();
-    startSideAdRotation();
-  });
-  window.addEventListener("load", () => {
-    rotateSideAds();
-  }, { once: true });
-  primeAdEngineOnInteraction();
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initializeBurnfeed, { once: true });
-} else {
-  initializeBurnfeed();
-}
+renderQuestions();
+attachPersistenceListeners();
+bindSideAdButtons();
+primeAdEngineOnInteraction();
