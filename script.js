@@ -1017,6 +1017,7 @@ function applySideAdImage(button, imagePath, fallbackTitle) {
 
   button.dataset.clickable = clickableConfig ? "true" : "false";
   button.classList.toggle("is-clickable", Boolean(clickableConfig));
+  button.setAttribute("aria-disabled", clickableConfig ? "false" : "true");
 }
 
 function rotateSideAds() {
@@ -1043,11 +1044,13 @@ function rotateSideAds() {
 
 function startSideAdRotation() {
   if (sideAdRotationTimer) {
-    return;
+    window.clearInterval(sideAdRotationTimer);
   }
 
   rotateSideAds();
-  sideAdRotationTimer = window.setInterval(rotateSideAds, BURNFEED_CONFIG.sideAdRotateMs || 10000);
+  sideAdRotationTimer = window.setInterval(() => {
+    rotateSideAds();
+  }, BURNFEED_CONFIG.sideAdRotateMs || 10000);
 }
 
 function bindSideAdButtons() {
@@ -1165,7 +1168,14 @@ function initializeBurnfeed() {
   renderQuestions();
   attachPersistenceListeners();
   bindSideAdButtons();
-  startSideAdRotation();
+  rotateSideAds();
+  window.requestAnimationFrame(() => {
+    rotateSideAds();
+    startSideAdRotation();
+  });
+  window.addEventListener("load", () => {
+    rotateSideAds();
+  }, { once: true });
   primeAdEngineOnInteraction();
 }
 
