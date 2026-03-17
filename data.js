@@ -397,7 +397,14 @@ const SIDE_AD_IMAGE_POOL = [
   "assets/ads/Goob_gif.gif",
   "assets/ads/Slade_ad2.JPG",
   "assets/ads/Free_ad.jpg",
-  "assets/ads/15year_ad.jpg"
+  "assets/ads/15year_ad.jpg",
+  "assets/ads/Jump.gif",
+  "assets/ads/Balloon.gif",
+  "assets/ads/Grind.gif",
+  "assets/ads/Wheelchair.gif",
+  "assets/ads/Gribbs_ad.PNG",
+  "assets/ads/PB_ad.PNG",
+  "assets/ads/Shirtless_ad.JPG"
 ];
 
 const CLICKABLE_SIDE_ADS = {
@@ -432,7 +439,23 @@ const POPUP_AD_IMAGE_POOL = [
   "assets/ads/Spencer_ad.JPG",
   "assets/ads/Sigeti_ad.JPG",
   "assets/ads/Scrat_ad1.PNG",
-  "assets/ads/Spencer_ad2.JPG"
+  "assets/ads/Spencer_ad2.JPG",
+  "assets/ads/PookieTounge_ad.JPG",
+  "assets/ads/McBryde_ad.JPG",
+  "assets/ads/Clo_ad.JPG",
+  "assets/ads/Martini_ad.JPG",
+  "assets/ads/Bed_ad.JPG",
+  "assets/ads/Bed2_ad.JPG",
+  "assets/ads/Couch_ad.JPG",
+  "assets/ads/Brady_ad.JPG",
+  "assets/ads/Car_ad.JPG",
+  "assets/ads/Beach_ad.JPG",
+  "assets/ads/Hollymassage_ad.JPG",
+  "assets/ads/TrentMcBryde_ad.JPG",
+  "assets/ads/HollyTruck_ad.JPG",
+  "assets/ads/Jack_ad.JPG",
+  "assets/ads/Piyush_ad.JPG",
+  "assets/ads/Eli_ad.JPG",
 ];
 
 const POPUP_ADS = [
