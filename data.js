@@ -407,7 +407,7 @@ const SIDE_AD_IMAGE_POOL = [
 
 const CLICKABLE_SIDE_ADS = {
   "assets/ads/Free_ad.jpg": {
-    modalImage: "assets/ads/Crispy_ad.PNG",
+    modalImage: "assets/ads/Cripsy_ad.PNG",
     copy: [
       "Put whatever larger image you want here for the Free ad popup.",
       "This one is intentionally clickable because apparently we are curating ad lore now."
