@@ -818,7 +818,7 @@ function buildMultiplyPopup(family, lineageLabel) {
   family.openCount += 1;
 
   const copy = fillPopupImage(content, popupImage, ad.title);
-  copy.textContent = `${ad.body} Round ${family.round + 1} of ${BURNFEED_CONFIG.multiplyPopupRounds + 1}. The next wave will not appear until every clone from this round is actually closed. Progress, somehow.`;
+  copy.textContent = `${ad.body}.`;
 
   actionRow.innerHTML = `<button class="ad-window-action" type="button">Maybe Later</button>`;
 
