@@ -409,15 +409,14 @@ const CLICKABLE_SIDE_ADS = {
   "assets/ads/Free_ad.jpg": {
     modalImage: "assets/ads/Cripsy_ad.PNG",
     copy: [
-      "Put whatever larger image you want here for the Free ad popup.",
-      "This one is intentionally clickable because apparently we are curating ad lore now."
+      "Chris Parinella a.k.a CP",
+      "I know you're disappointed"
     ]
   },
   "assets/ads/15year_ad.jpg": {
     modalImage: "assets/ads/Goob_ad2.JPG",
     copy: [
-      "Put whatever larger image you want here for the 15 year ad popup.",
-      "Only this and the Free ad should interrupt the user even more than usual."
+      "Goob is literally 15"
     ]
   }
 };
@@ -425,11 +424,11 @@ const CLICKABLE_SIDE_ADS = {
 const SIDE_ADS = [
   {
     id: "left-banner",
-    title: "This Could Have Been A Nice Website"
+    title: "Why are you clicking on that??"
   },
   {
     id: "right-banner",
-    title: "Premium Distraction Experience"
+    title: "Why are you clicking on that??"
   }
 ];
 
@@ -443,23 +442,23 @@ const POPUP_AD_IMAGE_POOL = [
 const POPUP_ADS = [
   {
     type: "default",
-    title: "Singles Near Literally Anywhere",
-    body: "A normal popup ad. The user can close it like a reasonable nuisance."
+    title: "Singles in your area",
+    body: "This hottie wants you. hubba bubba"
   },
   {
     type: "default",
     title: "Doctors Hate This Quiz",
-    body: "Another plain popup, because repetition is the soul of bad design."
+    body: "This bad boy found the secret to immortality"
   },
   {
     type: "multiply",
-    title: "Congratulations, You Clicked Nothing",
-    body: "Closing this ad creates two more. It is inspired by malware and the human condition."
+    title: "Don't close me >:)",
+    body: "He's gonna get you if you close this window"
   },
   {
     type: "multiply",
-    title: "Your Device Is Probably Fine",
-    body: "Every close button is merely a suggestion. Two fresh popups will rise from its ashes."
+    title: "Your device is 95% infected",
+    body: "And the infection is growing"
   },
   {
     type: "jumpscare",
