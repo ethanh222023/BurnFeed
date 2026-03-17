@@ -375,7 +375,7 @@ function getResolvedClickableSideAds() {
 
   return {
     "assets/ads/Free_ad.jpg": {
-      modalImage: "assets/ads/Crispy_ad.PNG",
+      modalImage: "assets/ads/Cripsy_ad.PNG",
       copy: [
         "Replace this with whatever larger image you want for the Free ad popup.",
         "This ad is clickable because apparently even fake banners need hierarchy."
