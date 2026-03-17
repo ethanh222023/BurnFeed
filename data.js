@@ -2,98 +2,96 @@ const QUIZ_QUESTIONS = [
   {
     id: "q1",
     type: "text",
-    question: "What kind of date plan feels most dangerously convincing to you?",
+    question: "What is your name?",
     placeholder: "Type your answer here...",
     required: true
   },
   {
     id: "q2",
-    question: "Which text message would absolutely get your attention?",
+    question: "Can you drive?",
     options: [
-      "I made a playlist for your commute.",
-      "Be ready in 20. It's a surprise.",
-      "Need a partner in crime for tacos tonight."
+      "Yes",
+      "No",
+      "I am missing a day/finding my own way there"
     ]
   },
   {
     id: "q3",
-    question: "Choose your ideal flirting style.",
+    question: "What is the maximum amount of people other than you that you can drive?",
     options: [
-      "Dry humor and devastating eye contact",
-      "Sweet compliments with suspicious precision",
-      "Playful roasting with a grin",
-      "Accidental hand touch and panic",
-      "Bold confidence with zero shame",
-      "Slow-burn banter that gets out of hand",
-      "Hopelessly awkward but weirdly charming"
+      "0 / I cannot drive",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
     ]
   },
   {
     id: "q4",
-    question: "What kind of chaos are you secretly into?",
+    question: "What time can you leave on Friday?",
     options: [
-      "Last-minute road trip chaos",
-      "Elegant chaos with expensive candles",
-      "Competitive chaos involving games",
-      "Soft domestic chaos like baking at midnight",
-      "Unhinged spontaneous plans that somehow work out"
+      "2-4",
+      "4-6",
+      "6-8",
+      "8+",
+      "Whenever"
     ]
   },
   {
     id: "q5",
     type: "text",
-    question: "Anything else you want BurnFeed to know?",
+    question: "Any other notes regarding rides? If you are coming on your own/missing a day, include that here",
     placeholder: "Optional",
     required: false
   },
   {
     id: "q6",
-    question: "Which outfit energy are you drawn to?",
+    question: "If CT is on fire and you can only save 1 person, who would you save?",
     options: [
-      "Classic and suspiciously polished",
-      "Messy hot with rolled sleeves",
-      "Athletic but still flirtable",
-      "Soft sweater energy"
+      "Coby",
+      "Pookie",
+      "Ethan",
+      "Trent"
     ]
   },
   {
     id: "q7",
-    question: "What should your future person be weirdly good at?",
+    question: "Max times gooned in a day?",
     options: [
-      "Parallel parking",
-      "Cooking without measuring",
-      "Winning every party game",
-      "Making awkward situations funny"
+      "3",
+      "4",
+      "5",
+      "6+"
     ]
   },
   {
     id: "q8",
-    question: "Pick the most romantic red flag.",
+    question: "Which would you rather?",
     options: [
-      "They act chill but definitely wrote poetry once",
-      "They say they don't want a pet and then adopt one",
-      "They are too competitive at mini golf",
-      "They call everyone bestie except the person they like"
+      "Orgasm every time you cough",
+      "Have your grandma walk in on you doing it",
+      "Use a toothbrush that has been dropped in a public toilet",
+      "Kiss a random person in a subway station"
     ]
   },
   {
     id: "q9",
-    question: "What vibe should the first kiss have?",
+    question: "Think about it hard. If all 8 billion people in the world voted to keep either tortillas or weed, which would win?",
     options: [
-      "Rainstorm movie nonsense",
-      "So much tension it becomes a public utility",
-      "Laughing first, then kissing",
-      "Quiet and unexpectedly soft"
+      "Tortillas",
+      "Weed"
     ]
   },
   {
     id: "q10",
-    question: "Pick a dangerously revealing snack.",
+    question: "Ethan, Goob, Matthew, and Jack all ask you for a quarter. Who are you giving it to?",
     options: [
-      "Hot fries",
-      "Chocolate-covered strawberries",
-      "Popcorn with too much butter",
-      "A charcuterie board you pretend was casual"
+      "Ethan",
+      "Goob",
+      "Matthew",
+      "Jack"
     ]
   }
 ];
