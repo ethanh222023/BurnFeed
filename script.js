@@ -62,31 +62,32 @@ function renderQuestions() {
             placeholder="${escapeHtml(question.placeholder || "Type your answer here...")}"
             ${required ? "required" : ""}
           >${savedValue}</textarea>
-          ${required ? '<p class="text-response-note">Required</p>' : '<p class="text-response-note optional">Optional</p>'}
+          <p class="text-response-note${required ? "" : " optional"}">${required ? "Required" : "Optional"}</p>
         </div>
       `;
     } else {
-      inputHtml = `
-        <div class="option-list">
-          ${(question.options || []).map((option, optionIndex) => {
-            const optionId = `${question.id}-${optionIndex}`;
-            const checked = savedAnswers[question.id] === option ? "checked" : "";
-            return `
-              <label class="option-label" for="${optionId}">
-                <input
-                  type="radio"
-                  id="${optionId}"
-                  name="${question.id}"
-                  value="${escapeHtml(option)}"
-                  ${checked}
-                  ${required ? "required" : ""}
-                />
-                <span>${escapeHtml(option)}</span>
-              </label>
-            `;
-          }).join("")}
-        </div>
-      `;
+      const optionsHtml = (question.options || [])
+        .map((option, optionIndex) => {
+          const optionId = `${question.id}-${optionIndex}`;
+          const checked = savedAnswers[question.id] === option ? "checked" : "";
+
+          return `
+            <label class="option-label" for="${optionId}">
+              <input
+                type="radio"
+                id="${optionId}"
+                name="${question.id}"
+                value="${escapeHtml(option)}"
+                ${checked}
+                ${required ? "required" : ""}
+              />
+              <span>${escapeHtml(option)}</span>
+            </label>
+          `;
+        })
+        .join("");
+
+      inputHtml = `<div class="option-list">${optionsHtml}</div>`;
     }
 
     return `
@@ -233,13 +234,10 @@ function attachPersistenceListeners() {
     return;
   }
 
-  const persist = () => {
+  quizForm.addEventListener("change", () => {
     const answers = getFormAnswers();
     saveAnswers(answers);
-  };
-
-  quizForm.addEventListener("change", persist);
-  quizForm.addEventListener("input", persist);
+  });
 
   persistenceListenerAttached = true;
 }
