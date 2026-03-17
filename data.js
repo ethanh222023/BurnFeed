@@ -1,13 +1,10 @@
 const QUIZ_QUESTIONS = [
   {
     id: "q1",
-    question: "Pick the date plan that feels most dangerously convincing.",
-    options: [
-      "Bookstore wandering with coffee in hand",
-      "Rooftop drinks and questionable confidence",
-      "Arcade night with intense trash talk",
-      "Farmer's market flirting over peaches"
-    ]
+    type: "text",
+    question: "What kind of date plan feels most dangerously convincing to you?",
+    placeholder: "Type your answer here...",
+    required: true
   },
   {
     id: "q2",
@@ -15,7 +12,6 @@ const QUIZ_QUESTIONS = [
     options: [
       "I made a playlist for your commute.",
       "Be ready in 20. It's a surprise.",
-      "I saw a dog and thought of you somehow.",
       "Need a partner in crime for tacos tonight."
     ]
   },
@@ -26,7 +22,10 @@ const QUIZ_QUESTIONS = [
       "Dry humor and devastating eye contact",
       "Sweet compliments with suspicious precision",
       "Playful roasting with a grin",
-      "Accidental hand touch and panic"
+      "Accidental hand touch and panic",
+      "Bold confidence with zero shame",
+      "Slow-burn banter that gets out of hand",
+      "Hopelessly awkward but weirdly charming"
     ]
   },
   {
@@ -36,18 +35,16 @@ const QUIZ_QUESTIONS = [
       "Last-minute road trip chaos",
       "Elegant chaos with expensive candles",
       "Competitive chaos involving games",
-      "Soft domestic chaos like baking at midnight"
+      "Soft domestic chaos like baking at midnight",
+      "Unhinged spontaneous plans that somehow work out"
     ]
   },
   {
     id: "q5",
-    question: "Pick a love-language-adjacent behavior.",
-    options: [
-      "Remembering tiny details about your day",
-      "Stealing your fries and buying you dessert",
-      "Fixing your problems before you ask",
-      "Sending memes at morally incorrect hours"
-    ]
+    type: "text",
+    question: "Anything else you want BurnFeed to know?",
+    placeholder: "Optional",
+    required: false
   },
   {
     id: "q6",

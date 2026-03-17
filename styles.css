@@ -217,6 +217,53 @@ label {
   accent-color: var(--accent);
 }
 
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.text-response-wrap {
+  display: grid;
+  gap: 10px;
+}
+
+.text-response-input {
+  width: 100%;
+  min-height: 120px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.text-response-input:focus {
+  outline: 2px solid rgba(92, 69, 255, 0.18);
+  border-color: var(--accent);
+}
+
+.text-response-note {
+  margin: 0;
+  color: var(--brand-red);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.text-response-note.optional {
+  color: var(--muted);
+}
+
 .actions-row {
   display: flex;
   gap: 12px;

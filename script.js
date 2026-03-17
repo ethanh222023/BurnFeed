@@ -140,32 +140,59 @@ function renderQuestions() {
   const savedAnswers = getSavedAnswers();
 
   questionsContainer.innerHTML = QUIZ_QUESTIONS.map((question, index) => {
-    const optionsHtml = question.options
-      .map((option, optionIndex) => {
-        const optionId = `${question.id}-${optionIndex}`;
-        const checked = savedAnswers[question.id] === option ? "checked" : "";
+    const isTextQuestion = question.type === "text";
+    const isRequired = question.required !== false;
 
-        return `
-          <label class="option-label" for="${optionId}">
-            <input
-              type="radio"
-              id="${optionId}"
-              name="${question.id}"
-              value="${escapeHtml(option)}"
-              ${checked}
-              required
-            />
-            <span>${escapeHtml(option)}</span>
-          </label>
-        `;
-      })
-      .join("");
+    let inputHtml = "";
+
+    if (isTextQuestion) {
+      const savedValue = escapeHtml(savedAnswers[question.id] || "");
+      const rows = question.id === "q5" ? 3 : 4;
+
+      inputHtml = `
+        <div class="text-response-wrap">
+          <label class="sr-only" for="${question.id}">${escapeHtml(question.question)}</label>
+          <textarea
+            id="${question.id}"
+            name="${question.id}"
+            class="text-response-input"
+            rows="${rows}"
+            placeholder="${escapeHtml(question.placeholder || "Type your answer here...")}"
+            ${isRequired ? "required" : ""}
+          >${savedValue}</textarea>
+          <p class="text-response-note${isRequired ? "" : " optional"}">${isRequired ? "Required" : "Optional"}</p>
+        </div>
+      `;
+    } else {
+      const optionsHtml = question.options
+        .map((option, optionIndex) => {
+          const optionId = `${question.id}-${optionIndex}`;
+          const checked = savedAnswers[question.id] === option ? "checked" : "";
+
+          return `
+            <label class="option-label" for="${optionId}">
+              <input
+                type="radio"
+                id="${optionId}"
+                name="${question.id}"
+                value="${escapeHtml(option)}"
+                ${checked}
+                ${isRequired ? "required" : ""}
+              />
+              <span>${escapeHtml(option)}</span>
+            </label>
+          `;
+        })
+        .join("");
+
+      inputHtml = `<div class="option-list">${optionsHtml}</div>`;
+    }
 
     return `
       <section class="question-card">
         <p class="question-number">Question ${index + 1}</p>
         <h2 class="question-title">${escapeHtml(question.question)}</h2>
-        <div class="option-list">${optionsHtml}</div>
+        ${inputHtml}
       </section>
     `;
   }).join("");
@@ -196,14 +223,21 @@ function getFormAnswers() {
   const answers = {};
 
   QUIZ_QUESTIONS.forEach((question) => {
-    answers[question.id] = formData.get(question.id) || "";
+    const value = formData.get(question.id);
+    answers[question.id] = typeof value === "string" ? value.trim() : "";
   });
 
   return answers;
 }
 
 function allQuestionsAnswered(answers) {
-  return QUIZ_QUESTIONS.every((question) => Boolean(answers[question.id]));
+  return QUIZ_QUESTIONS.every((question) => {
+    if (question.required === false) {
+      return true;
+    }
+
+    return Boolean(String(answers[question.id] || "").trim());
+  });
 }
 
 function deterministicHash(input) {
@@ -218,7 +252,10 @@ function deterministicHash(input) {
 }
 
 function findMatchFromAnswers(answers) {
-  const normalized = QUIZ_QUESTIONS.map((question) => `${question.id}:${answers[question.id]}`).join("|");
+  const normalized = QUIZ_QUESTIONS
+    .filter((question) => !["q1", "q5"].includes(question.id))
+    .map((question) => `${question.id}:${answers[question.id]}`)
+    .join("|");
   const hash = deterministicHash(normalized);
   const matchIndex = hash % MATCHES.length;
   return MATCHES[matchIndex];
@@ -294,10 +331,13 @@ function attachPersistenceListeners() {
     return;
   }
 
-  quizForm.addEventListener("change", () => {
+  const persistAnswers = () => {
     const answers = getFormAnswers();
     saveAnswers(answers);
-  });
+  };
+
+  quizForm.addEventListener("change", persistAnswers);
+  quizForm.addEventListener("input", persistAnswers);
 
   persistenceListenerAttached = true;
 }
