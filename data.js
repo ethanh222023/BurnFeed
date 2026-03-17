@@ -470,11 +470,11 @@ const POPUP_ADS = [
 ];
 
 Object.assign(BURNFEED_CONFIG, {
-  popupIntervalMinMs: 5000,
-  popupIntervalMaxMs: 15000,
+  popupIntervalMinMs: 9000,
+  popupIntervalMaxMs: 22000,
   sideAdRotateMs: 10000,
   multiplyPopupRounds: 2,
-  maxSimultaneousPopups: 5,
+  maxSimultaneousPopups: 4,
   jumpscareDurationMs: 300,
   sideAdModalLockScroll: true
 });
