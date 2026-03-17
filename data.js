@@ -381,7 +381,7 @@ const MATCHES = [
 const BURNFEED_CONFIG = {
   storageKeyAnswers: "burnfeed_saved_answers_v1",
   storageKeyLogged: "burnfeed_logged_first_submit_v1",
-  googleScriptUrl: "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE",
+  googleScriptUrl: "https://script.google.com/macros/s/AKfycbzDF1-W1UIVgsfCH4TQcHqG7GBVBU6nsE-pze3peWUfkydxvKv5Lw-pdXMwdjreA9jn/exec",
   customJumpscareSound: "assets/ads/Ballsack3.mp3",
   popupTypeWeights: {
     default: 0.4,
