@@ -375,7 +375,7 @@ const MATCHES = [
   {
     id: 31,
     name: "Trevor",
-    image: "assets/matches/Trevor.PNG",
+    image: "assets/matches/Trevor.png",
     text: [
       "Trevor is the slow-smile, late-text, impossible-to-forget type. They're imaginative, annoyingly attractive, and way too good at making moments feel cinematic without trying too hard.",
       "You're matched because Trevor knows how to build tension and then actually deliver on it. They'll send a dangerous voice note, make eye contact like a sport, and leave you wondering how this got so flirty so fast."
