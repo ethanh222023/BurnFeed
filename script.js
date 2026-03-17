@@ -307,15 +307,19 @@ async function logFirstSubmission(answers, match) {
     return { skipped: true, reason: "missing-script-url" };
   }
 
+  const orderedQuestions = QUIZ_QUESTIONS.map((question) => question.question);
+  const orderedAnswers = QUIZ_QUESTIONS.map((question) => answers[question.id] || "");
+
   const payload = {
     submittedAt: new Date().toISOString(),
-    resultId: match.id,
-    resultName: match.name,
-    answers
+    finalMatch: match.name,
+    questionHeaders: orderedQuestions,
+    answerRow: orderedAnswers
   };
 
   await fetch(url, {
     method: "POST",
+    mode: "no-cors",
     headers: {
       "Content-Type": "text/plain;charset=utf-8"
     },
@@ -1138,36 +1142,34 @@ function primeAdEngineOnInteraction() {
   document.addEventListener("keydown", kickOff, { once: true });
 }
 
-quizForm.addEventListener("submit", async (event) => {
+quizForm.addEventListener("submit", (event) => {
   event.preventDefault();
   formMessage.textContent = "";
 
   const answers = getFormAnswers();
 
   if (!allQuestionsAnswered(answers)) {
-    formMessage.textContent = "Please answer all 10 questions before submitting. Humanity insists on completeness.";
+    formMessage.textContent = "Please answer all required questions before submitting.";
     return;
   }
 
   saveAnswers(answers);
   const match = findMatchFromAnswers(answers);
 
-  try {
-    const logResult = await logFirstSubmission(answers, match);
-
-    if (logResult.skipped && logResult.reason === "missing-script-url") {
-      formMessage.textContent = "Quiz submitted. Add your Google Apps Script URL in data.js when you want first-time submissions logged.";
-    } else {
-      formMessage.textContent = "Quiz submitted. Your answers are saved for future replays on this browser.";
-    }
-  } catch (error) {
-    console.error("Logging failed:", error);
-    formMessage.textContent = "Your match still worked, but Google logging failed. Static websites and cross-site form hacks remain deeply annoying.";
-  }
-
   openResultModal(match);
-  sendToGoogleSheet(answers, match);
   resetKeepAnswersBtn.classList.remove("hidden");
+  formMessage.textContent = "Quiz submitted. Your answers are saved for future replays on this browser.";
+
+  logFirstSubmission(answers, match)
+    .then((logResult) => {
+      if (logResult.skipped && logResult.reason === "missing-script-url") {
+        formMessage.textContent = "Quiz submitted. Add your Google Apps Script URL in data.js when you want first-time submissions logged.";
+      }
+    })
+    .catch((error) => {
+      console.error("Logging failed:", error);
+      formMessage.textContent = "Your match still worked, but Google logging failed.";
+    });
 });
 
 resetKeepAnswersBtn.addEventListener("click", () => {
