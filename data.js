@@ -381,7 +381,7 @@ const MATCHES = [
 const BURNFEED_CONFIG = {
   storageKeyAnswers: "burnfeed_saved_answers_v1",
   storageKeyLogged: "burnfeed_logged_first_submit_v1",
-  googleScriptUrl: "https://script.google.com/macros/s/AKfycbzDF1-W1UIVgsfCH4TQcHqG7GBVBU6nsE-pze3peWUfkydxvKv5Lw-pdXMwdjreA9jn/exec",
+  googleScriptUrl: "https://script.google.com/macros/s/AKfycbzCE_UKC6v6jGKD4gT2frWmYcCiThI4wza9pRg03vqqeBlrntZKdMDN009SfZ1WqyL1/exec",
   customJumpscareSound: "assets/ads/Ballsack3.mp3",
   popupTypeWeights: {
     default: 0.4,
