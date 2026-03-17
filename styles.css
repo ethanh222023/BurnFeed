@@ -68,7 +68,8 @@ label {
 
 .side-ads {
   position: sticky;
-  top: 104px;
+  top: 24px;
+  align-self: start;
 }
 
 .side-ad-button {
@@ -76,13 +77,22 @@ label {
   border: none;
   background: transparent;
   padding: 0;
+  cursor: default;
+  align-self: start;
+}
+
+.side-ad-button.is-clickable {
   cursor: pointer;
 }
 
 .side-ad-button img {
   width: 100%;
   min-height: 720px;
-  object-fit: cover;
+  max-height: 78vh;
+  object-fit: contain !important;
+  object-position: center center !important;
+  background: #f5f2e8;
+  padding: 12px;
   border-radius: 20px;
   border: 1px solid var(--line);
   box-shadow: 0 16px 34px rgba(17, 17, 17, 0.12);
@@ -93,11 +103,11 @@ label {
   transform: translateY(-2px);
 }
 
-.side-ad.is-clickable {
+.side-ad-button.is-clickable {
   cursor: pointer;
 }
 
-.side-ad:not(.is-clickable) {
+.side-ad-button:not(.is-clickable) {
   cursor: default;
 }
 
@@ -291,7 +301,9 @@ label {
 .result-image {
   width: 100%;
   aspect-ratio: 16 / 9;
-  object-fit: cover;
+  object-fit: contain !important;
+  object-position: center;
+  background: #f7f7f7;
   border-radius: 18px;
   border: 1px solid var(--line);
   margin-bottom: 18px;
@@ -371,7 +383,9 @@ label {
 .ad-window-image {
   width: 100%;
   aspect-ratio: 16 / 10;
-  object-fit: cover;
+  object-fit: contain !important;
+  object-position: center;
+  background: #f7f7f7;
   border-radius: 14px;
   border: 1px solid var(--line);
 }
@@ -426,7 +440,7 @@ label {
 .jumpscare-overlay img {
   width: min(92vw, 820px);
   max-height: 92vh;
-  object-fit: contain;
+  object-fit: contain !important;
 }
 
 @media (max-width: 1100px) {
