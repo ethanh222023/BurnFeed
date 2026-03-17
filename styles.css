@@ -207,40 +207,6 @@ label {
   accent-color: var(--accent);
 }
 
-.text-response-wrap {
-  display: grid;
-  gap: 8px;
-}
-
-.text-response-input {
-  width: 100%;
-  min-height: 120px;
-  padding: 14px 16px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  font: inherit;
-  line-height: 1.5;
-  resize: vertical;
-  background: #fff;
-  color: var(--ink);
-}
-
-.text-response-input:focus {
-  outline: 2px solid rgba(238, 28, 37, 0.18);
-  border-color: var(--accent);
-}
-
-.text-response-note {
-  margin: 0;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--brand-red);
-}
-
-.text-response-note.optional {
-  color: #666;
-}
-
 .actions-row {
   display: flex;
   gap: 12px;
@@ -495,4 +461,39 @@ label {
   .ad-window {
     width: min(94vw, 380px);
   }
+}
+
+
+.text-response-wrap {
+  display: grid;
+  gap: 8px;
+}
+
+.text-response-input {
+  width: 100%;
+  min-height: 120px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.text-response-input:focus {
+  outline: 2px solid rgba(238, 28, 37, 0.18);
+  border-color: var(--accent);
+}
+
+.text-response-note {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--brand-red);
+}
+
+.text-response-note.optional {
+  color: #666;
 }

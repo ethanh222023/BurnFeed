@@ -44,14 +44,14 @@ function renderQuestions() {
   const savedAnswers = getSavedAnswers();
 
   questionsContainer.innerHTML = QUIZ_QUESTIONS.map((question, index) => {
-    const isText = question.type === "text";
-    const required = question.required !== false;
+    const isTextQuestion = question.type === "text";
+    const isRequired = question.required !== false;
 
-    let inputHtml = "";
+    let answerMarkup = "";
 
-    if (isText) {
+    if (isTextQuestion) {
       const savedValue = escapeHtml(savedAnswers[question.id] || "");
-      inputHtml = `
+      answerMarkup = `
         <div class="text-response-wrap">
           <label class="sr-only" for="${question.id}">${escapeHtml(question.question)}</label>
           <textarea
@@ -60,13 +60,13 @@ function renderQuestions() {
             class="text-response-input"
             rows="${question.id === "q5" ? 3 : 4}"
             placeholder="${escapeHtml(question.placeholder || "Type your answer here...")}"
-            ${required ? "required" : ""}
+            ${isRequired ? "required" : ""}
           >${savedValue}</textarea>
-          <p class="text-response-note${required ? "" : " optional"}">${required ? "Required" : "Optional"}</p>
+          <p class="text-response-note${isRequired ? "" : " optional"}">${isRequired ? "Required" : "Optional"}</p>
         </div>
       `;
     } else {
-      const optionsHtml = (question.options || [])
+      const optionsHtml = question.options
         .map((option, optionIndex) => {
           const optionId = `${question.id}-${optionIndex}`;
           const checked = savedAnswers[question.id] === option ? "checked" : "";
@@ -79,7 +79,7 @@ function renderQuestions() {
                 name="${question.id}"
                 value="${escapeHtml(option)}"
                 ${checked}
-                ${required ? "required" : ""}
+                ${isRequired ? "required" : ""}
               />
               <span>${escapeHtml(option)}</span>
             </label>
@@ -87,14 +87,14 @@ function renderQuestions() {
         })
         .join("");
 
-      inputHtml = `<div class="option-list">${optionsHtml}</div>`;
+      answerMarkup = `<div class="option-list">${optionsHtml}</div>`;
     }
 
     return `
       <section class="question-card">
         <p class="question-number">Question ${index + 1}</p>
         <h2 class="question-title">${escapeHtml(question.question)}</h2>
-        ${inputHtml}
+        ${answerMarkup}
       </section>
     `;
   }).join("");
@@ -137,6 +137,7 @@ function allQuestionsAnswered(answers) {
     if (question.required === false) {
       return true;
     }
+
     return Boolean(String(answers[question.id] || "").trim());
   });
 }
@@ -153,8 +154,8 @@ function deterministicHash(input) {
 }
 
 function findMatchFromAnswers(answers) {
-  const matchQuestions = QUIZ_QUESTIONS.filter((question) => !["q1", "q5"].includes(question.id));
-  const normalized = matchQuestions
+  const normalized = QUIZ_QUESTIONS
+    .filter((question) => !["q1", "q5"].includes(question.id))
     .map((question) => `${question.id}:${answers[question.id] || ""}`)
     .join("|");
   const hash = deterministicHash(normalized);

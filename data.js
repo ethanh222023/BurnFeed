@@ -2,7 +2,7 @@ const QUIZ_QUESTIONS = [
   {
     id: "q1",
     type: "text",
-    question: "Write your own dream first-date idea.",
+    question: "Pick the date plan that feels most dangerously convincing.",
     placeholder: "Type your answer here...",
     required: true
   },
@@ -42,7 +42,7 @@ const QUIZ_QUESTIONS = [
   {
     id: "q5",
     type: "text",
-    question: "Anything else you want BurnFeed to know?",
+    question: "Pick a love-language-adjacent behavior.",
     placeholder: "Optional",
     required: false
   },
