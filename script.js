@@ -1166,6 +1166,7 @@ quizForm.addEventListener("submit", async (event) => {
   }
 
   openResultModal(match);
+  sendToGoogleSheet(answers, match);
   resetKeepAnswersBtn.classList.remove("hidden");
 });
 
@@ -1223,4 +1224,35 @@ if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initializeBurnfeed, { once: true });
 } else {
   initializeBurnfeed();
+}
+
+async function sendToGoogleSheet(answers, match) {
+  try {
+    // no URL = do nothing
+    if (!BURNFEED_CONFIG.googleScriptUrl) return;
+
+    // only send once per user
+    if (hasLoggedFirstSubmit && hasLoggedFirstSubmit()) return;
+
+    const payload = {
+      answers: answers,
+      match: match.name,
+      timestamp: new Date().toISOString()
+    };
+
+    await fetch(BURNFEED_CONFIG.googleScriptUrl, {
+      method: "POST",
+      mode: "no-cors", // IMPORTANT for GitHub Pages
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    // mark as sent
+    if (setLoggedFirstSubmit) setLoggedFirstSubmit();
+
+  } catch (err) {
+    console.error("Google Sheet logging failed:", err);
+  }
 }
