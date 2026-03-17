@@ -406,15 +406,15 @@ const CLICKABLE_SIDE_ADS = {
   "assets/ads/Free_ad.jpg": {
     modalImage: "assets/ads/Cripsy_ad.PNG",
     copy: [
-      "Put whatever larger image you want here for the Free ad popup.",
-      "This one is intentionally clickable because apparently we are curating ad lore now."
+      "Chris Parinella, aka CP",
+      "Why the fuck did you wanna watch that??"
     ]
   },
   "assets/ads/15year_ad.jpg": {
     modalImage: "assets/ads/Goob_ad2.JPG",
     copy: [
-      "Put whatever larger image you want here for the 15 year ad popup.",
-      "Only this and the Free ad should interrupt the user even more than usual."
+      "Goob is literally a 15 year old",
+      "He is hot tho"
     ]
   }
 };
@@ -422,11 +422,11 @@ const CLICKABLE_SIDE_ADS = {
 const SIDE_ADS = [
   {
     id: "left-banner",
-    title: "This Could Have Been A Nice Website"
+    title: "Why did you click on this??"
   },
   {
     id: "right-banner",
-    title: "Premium Distraction Experience"
+    title: "Why did you click on this??"
   }
 ];
 
@@ -440,23 +440,23 @@ const POPUP_AD_IMAGE_POOL = [
 const POPUP_ADS = [
   {
     type: "default",
-    title: "Singles Near Literally Anywhere",
-    body: "A normal popup ad. The user can close it like a reasonable nuisance."
+    title: "Singles near you",
+    body: "This hottie is single and waiting to meet you"
   },
   {
     type: "default",
-    title: "Doctors Hate This Quiz",
-    body: "Another plain popup, because repetition is the soul of bad design."
+    title: "Doctors hate this one trick",
+    body: "This guy figured out the secret to immortality. Click here to learn more"
   },
   {
     type: "multiply",
-    title: "Congratulations, You Clicked Nothing",
-    body: "Closing this ad creates two more. It is inspired by malware and the human condition."
+    title: "This is deadass a virus",
+    body: "Stop clicking me"
   },
   {
     type: "multiply",
-    title: "Your Device Is Probably Fine",
-    body: "Every close button is merely a suggestion. Two fresh popups will rise from its ashes."
+    title: "Your device is 95% infected",
+    body: "You're making it worse"
   },
   {
     type: "jumpscare",
