@@ -1,10 +1,13 @@
 const QUIZ_QUESTIONS = [
   {
     id: "q1",
-    type: "text",
-    question: "In one sentence, describe your ideal first date.",
-    placeholder: "Type your answer here...",
-    required: true
+    question: "Pick the date plan that feels most dangerously convincing.",
+    options: [
+      "Bookstore wandering with coffee in hand",
+      "Rooftop drinks and questionable confidence",
+      "Arcade night with intense trash talk",
+      "Farmer's market flirting over peaches"
+    ]
   },
   {
     id: "q2",
@@ -12,6 +15,7 @@ const QUIZ_QUESTIONS = [
     options: [
       "I made a playlist for your commute.",
       "Be ready in 20. It's a surprise.",
+      "I saw a dog and thought of you somehow.",
       "Need a partner in crime for tacos tonight."
     ]
   },
@@ -22,10 +26,7 @@ const QUIZ_QUESTIONS = [
       "Dry humor and devastating eye contact",
       "Sweet compliments with suspicious precision",
       "Playful roasting with a grin",
-      "Accidental hand touch and panic",
-      "Overconfident teasing that somehow works",
-      "Awkward sincerity with elite recovery",
-      "Flirting so subtle it could be legally denied"
+      "Accidental hand touch and panic"
     ]
   },
   {
@@ -35,16 +36,18 @@ const QUIZ_QUESTIONS = [
       "Last-minute road trip chaos",
       "Elegant chaos with expensive candles",
       "Competitive chaos involving games",
-      "Soft domestic chaos like baking at midnight",
-      "Mild public embarrassment with great banter"
+      "Soft domestic chaos like baking at midnight"
     ]
   },
   {
     id: "q5",
-    type: "text",
-    question: "Anything else you want the matchmaker to know?",
-    placeholder: "Optional...",
-    required: false
+    question: "Pick a love-language-adjacent behavior.",
+    options: [
+      "Remembering tiny details about your day",
+      "Stealing your fries and buying you dessert",
+      "Fixing your problems before you ask",
+      "Sending memes at morally incorrect hours"
+    ]
   },
   {
     id: "q6",
