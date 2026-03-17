@@ -68,8 +68,7 @@ label {
 
 .side-ads {
   position: sticky;
-  top: 24px;
-  align-self: start;
+  top: 104px;
 }
 
 .side-ad-button {
@@ -83,7 +82,10 @@ label {
 .side-ad-button img {
   width: 100%;
   min-height: 720px;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
+  background: #f5f2e8;
+  padding: 12px;
   border-radius: 20px;
   border: 1px solid var(--line);
   box-shadow: 0 16px 34px rgba(17, 17, 17, 0.12);
@@ -292,7 +294,9 @@ label {
 .result-image {
   width: 100%;
   aspect-ratio: 16 / 9;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
+  background: #f7f7f7;
   border-radius: 18px;
   border: 1px solid var(--line);
   margin-bottom: 18px;
@@ -372,7 +376,9 @@ label {
 .ad-window-image {
   width: 100%;
   aspect-ratio: 16 / 10;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
+  background: #f7f7f7;
   border-radius: 14px;
   border: 1px solid var(--line);
 }
