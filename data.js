@@ -1,10 +1,13 @@
 const QUIZ_QUESTIONS = [
   {
     id: "q1",
-    type: "text",
     question: "Pick the date plan that feels most dangerously convincing.",
-    placeholder: "Type your answer here...",
-    required: true
+    options: [
+      "Bookstore wandering with coffee in hand",
+      "Rooftop drinks and questionable confidence",
+      "Arcade night with intense trash talk",
+      "Farmer's market flirting over peaches"
+    ]
   },
   {
     id: "q2",
@@ -12,6 +15,7 @@ const QUIZ_QUESTIONS = [
     options: [
       "I made a playlist for your commute.",
       "Be ready in 20. It's a surprise.",
+      "I saw a dog and thought of you somehow.",
       "Need a partner in crime for tacos tonight."
     ]
   },
@@ -22,10 +26,7 @@ const QUIZ_QUESTIONS = [
       "Dry humor and devastating eye contact",
       "Sweet compliments with suspicious precision",
       "Playful roasting with a grin",
-      "Accidental hand touch and panic",
-      "Bold confidence with zero shame",
-      "Slow-burn banter that gets out of hand",
-      "Hopelessly awkward but weirdly charming"
+      "Accidental hand touch and panic"
     ]
   },
   {
@@ -35,16 +36,18 @@ const QUIZ_QUESTIONS = [
       "Last-minute road trip chaos",
       "Elegant chaos with expensive candles",
       "Competitive chaos involving games",
-      "Soft domestic chaos like baking at midnight",
-      "Unhinged spontaneous plans that somehow work out"
+      "Soft domestic chaos like baking at midnight"
     ]
   },
   {
     id: "q5",
-    type: "text",
     question: "Pick a love-language-adjacent behavior.",
-    placeholder: "Optional",
-    required: false
+    options: [
+      "Remembering tiny details about your day",
+      "Stealing your fries and buying you dessert",
+      "Fixing your problems before you ask",
+      "Sending memes at morally incorrect hours"
+    ]
   },
   {
     id: "q6",
